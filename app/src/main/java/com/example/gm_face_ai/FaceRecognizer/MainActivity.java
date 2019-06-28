@@ -101,7 +101,7 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
     private boolean initialized = false;
     private boolean training = false;
 
-    private int CameraWay = CameraSource.CAMERA_FACING_FRONT;
+   /* private int CameraWay = CameraSource.CAMERA_FACING_FRONT; */
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -147,7 +147,7 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
                         })
                         .show());
 
-        final int[] count_button = {0};
+        /*final int[] count_button = {0};
         ImageButton switch_camera = findViewById(R.id.flipButton2);
         switch_camera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -165,7 +165,8 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
 
 
             }
-        });
+        }*/
+
 
     }
 
