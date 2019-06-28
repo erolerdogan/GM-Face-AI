@@ -111,4 +111,51 @@ public class FileUtils {
 
         return list;
     }
+    public static void delfiles(AssetManager mgr, String filename){
+        InputStream in = null;
+        OutputStream out = null;
+        try {
+            File file = new File(ROOT + File.separator + filename);
+            if (!file.exists()) {
+                file.delete();
+            }
+
+            in = mgr.open(filename);
+            out = new FileOutputStream(file);
+
+            byte[] buffer = new byte[1024];
+            int read;
+            while((read = in.read(buffer)) != -1){
+                out.write(buffer, 0, read);
+            }
+        } catch (Exception e) {
+            LOGGER.e(e, "Excetion!");
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    LOGGER.e(e, "IOExcetion!");
+                }
+            }
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    LOGGER.e(e, "IOExcetion!");
+                }
+            }
+        }
+    }
+    public static ArrayList<String> delLabel(String filename) throws FileNotFoundException {
+        Scanner s = new Scanner(new File(ROOT + File.separator + filename));
+        ArrayList<String> list = new ArrayList<>();
+
+            list.remove(s);
+
+        s.close();
+
+        return list;
+    }
+
 }
