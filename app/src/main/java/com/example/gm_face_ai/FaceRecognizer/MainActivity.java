@@ -94,6 +94,7 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
     private Snackbar initSnackbar;
     private Snackbar trainSnackbar;
     private FloatingActionButton button;
+    private FloatingActionButton buttonDel;
 
     private boolean initialized = false;
     private boolean training = false;
@@ -116,6 +117,18 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
                     performFileSearch(idx - 1);
                 })
                 .create();
+        AssetManager mgr = getAssets();
+        buttonDel = findViewById(R.id.floatingActionButtonDel);
+        buttonDel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FileUtils.delfiles(mgr,FileUtils.DATA_FILE);
+                FileUtils.delfiles(mgr,FileUtils.MODEL_FILE);
+                FileUtils.delfiles(mgr,FileUtils.LABEL_FILE);
+                classifier.delClasses();
+
+            }
+        });
 
         button = findViewById(R.id.add_button);
         button.setOnClickListener(view ->
