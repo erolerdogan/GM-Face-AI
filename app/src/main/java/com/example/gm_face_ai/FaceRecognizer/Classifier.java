@@ -153,6 +153,11 @@ public class Classifier {
         return cs;
     }
 
+    public void delClasses(){
+        classNames.clear();
+        getClassNames();
+    }
+
     List<Recognition> recognizeImage(Bitmap bitmap, Matrix matrix) {
         synchronized (this) {
             Pair faces[] = mtcnn.detect(bitmap);

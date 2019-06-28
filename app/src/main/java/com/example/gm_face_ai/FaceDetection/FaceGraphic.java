@@ -19,10 +19,12 @@ package com.example.gm_face_ai.FaceDetection;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PointF;
 
 import com.example.gm_face_ai.FaceDetection.Camera.GraphicOverlay;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.Landmark;
+
 
 /**
  * Graphic instance for rendering face position, orientation, and landmarks within an associated
@@ -33,7 +35,8 @@ class FaceGraphic extends GraphicOverlay.Graphic {
     private static final float ID_TEXT_SIZE = 30.0f;
     private static final float ID_Y_OFFSET = 50.0f;
     private static final float ID_X_OFFSET = -50.0f;
-    private static final float BOX_STROKE_WIDTH = 5.0f;
+    private static final float BOX_STROKE_WIDTH = 3.0f;
+
 
     private static final int COLOR_CHOICES[] = {
             Color.BLUE,
@@ -118,17 +121,18 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         float bottom = y + yOffset;
 
         canvas.drawRect(left, top, right, bottom, mBoxPaint);
+        Land(canvas);
 
+    }
+    private void Land(Canvas canvas){
 
-        /*face.getLandmarks();*/
+        double scale =Math.min(canvas.getWidth() / 1024, canvas.getHeight() / 768);
 
-/*        for (Landmark landmark : face.getLandmarks()) {
-            float cx = (landmark.getPosition().x +yOffset);
-            Float cy = (landmark.getPosition().y +xOffset);
-            canvas.drawCircle(cx, cy, 10, mBoxPaint);
-        }*/
-
-
+        for (Landmark landmark : mFace.getLandmarks()) {
+        int cx = (int) (landmark.getPosition().x *scale );
+        int cy = (int) (landmark.getPosition().y *scale);
+        canvas.drawCircle(cx, cy, 10, mBoxPaint);
+    }
     }
 
 }
