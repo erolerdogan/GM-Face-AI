@@ -54,12 +54,14 @@
         android:src="@drawable/ic_camera" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButtonDel"
+        android:id="@+id/fab3_del"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|left"
-        android:layout_margin="15dp"
-        android:clickable="true"
+        android:layout_gravity="bottom|right"
+        android:clickable="false"
+        android:visibility="invisible"
+        android:layout_marginRight="32dp"
+        android:layout_marginBottom="224dp"
         android:tint="@android:color/white"
         app:srcCompat="@android:drawable/ic_menu_delete" />
 
@@ -69,7 +71,8 @@
         android:layout_height="76dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
-        android:layout_gravity="bottom|right"
+        android:layout_gravity="bottom|center"
+
         android:background="#00FFFFFF"
         android:src="@drawable/baseline_camera_front_black_24dp"
         android:tint="@android:color/white"

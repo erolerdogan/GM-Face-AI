@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/../GM-Face-AI.iml" filepath="$PROJECT_DIR$/../GM-Face-AI.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../GM-Face-AI.iml" filepath="$PROJECT_DIR$/../GM-Face-AI.iml" />
       <module fileurl="file://$PROJECT_DIR$/../GMFaceAI.iml" filepath="$PROJECT_DIR$/../GMFaceAI.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app.iml" filepath="$PROJECT_DIR$/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/app.iml" filepath="$PROJECT_DIR$/app.iml" />
     </modules>
   </component>
