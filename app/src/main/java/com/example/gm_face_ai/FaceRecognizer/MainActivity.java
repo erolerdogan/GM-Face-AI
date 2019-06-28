@@ -104,6 +104,7 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
     private FloatingActionButton fab;
     private FloatingActionButton fab1;
     private FloatingActionButton fab2;
+    private FloatingActionButton fab3;
 
     Boolean isOpen = false;
 
@@ -118,9 +119,10 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
         initSnackbar = Snackbar.make(container, "Yükleniyor...", Snackbar.LENGTH_INDEFINITE);
         trainSnackbar = Snackbar.make(container, "Makina eğitiliyor...", Snackbar.LENGTH_INDEFINITE);
 
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab1 = (FloatingActionButton) findViewById(R.id.fab2_add_person);
-        fab2 = (FloatingActionButton) findViewById(R.id.fab_camera);
+        fab = findViewById(R.id.fab);
+        fab1 = findViewById(R.id.fab2_add_person);
+        fab2 = findViewById(R.id.fab_camera);
+        fab3 = findViewById(R.id.fab3_del);
 
 
 
@@ -144,7 +146,7 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
                 })
                 .create();
         AssetManager mgr = getAssets();
-        buttonDel = findViewById(R.id.floatingActionButtonDel);
+        buttonDel = findViewById(R.id.fab3_del);
         buttonDel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -181,15 +183,19 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
             fab.startAnimation(rotateBacward);
             fab1.startAnimation(fabClose);
             fab2.startAnimation(fabClose);
+            fab3.startAnimation(fabClose);
             fab1.setClickable(false);
             fab2.setClickable(false);
+            fab3.setClickable(false);
             isOpen = false;
         }else{
             fab.startAnimation(rotateForward);
             fab1.startAnimation(fabOpen);
             fab2.startAnimation(fabOpen);
+            fab3.startAnimation(fabOpen);
             fab1.setClickable(true);
             fab2.setClickable(true);
+            fab3.setClickable(true);
             isOpen = true;
         }
     }
