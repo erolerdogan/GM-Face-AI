@@ -18,8 +18,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         TextView txtInfo= findViewById(R.id.textInfo);
         txtInfo.setText("GENERAL MOBİLE AR-GE MERKEZİNDE GM Çalışanları Tarafından Oluşturuldu. \n Daha Fazla Bilgi için : https://github.com/general-mobile ");
+
+
 
 
         Button btnFaceDet = findViewById(R.id.btnFaceDet);

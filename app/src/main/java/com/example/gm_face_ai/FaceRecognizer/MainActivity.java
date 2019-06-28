@@ -33,6 +33,8 @@ import android.os.SystemClock;
 import android.util.Size;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 
@@ -99,6 +101,15 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
     private boolean initialized = false;
     private boolean training = false;
 
+    private FloatingActionButton fab;
+    private FloatingActionButton fab1;
+    private FloatingActionButton fab2;
+
+    Boolean isOpen = false;
+
+    Animation fabOpen, fabClose, rotateForward, rotateBacward ;
+
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,8 +118,23 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
         initSnackbar = Snackbar.make(container, "Yükleniyor...", Snackbar.LENGTH_INDEFINITE);
         trainSnackbar = Snackbar.make(container, "Makina eğitiliyor...", Snackbar.LENGTH_INDEFINITE);
 
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab1 = (FloatingActionButton) findViewById(R.id.fab2_add_person);
+        fab2 = (FloatingActionButton) findViewById(R.id.fab_camera);
+
+
+
+        fabOpen = AnimationUtils.loadAnimation(this,R.anim.fab_open);
+        fabClose = AnimationUtils.loadAnimation(this,R.anim.fab_close);
+
+        rotateForward = AnimationUtils.loadAnimation(this,R.anim.rotate_forward);
+        rotateBacward = AnimationUtils.loadAnimation(this,R.anim.rotate_backward);
+
+
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_edittext, null);
         EditText editText = dialogView.findViewById(R.id.edit_text);
+
+        // Dialog window to add new person
         AlertDialog editDialog = new AlertDialog.Builder(MainActivity.this)
                 .setTitle(R.string.enter_name)
                 .setView(dialogView)
@@ -130,19 +156,44 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
             }
         });
 
-        button = findViewById(R.id.add_button);
-        button.setOnClickListener(view ->
+        fab.setOnClickListener(view -> {animateFab();});
+
+
+        fab2.setOnClickListener(view ->
+
+                // Dialog window to choose name from list
+
                 new AlertDialog.Builder(MainActivity.this)
                         .setTitle(getString(R.string.select_name))
                         .setItems(classifier.getClassNames(), (dialogInterface, i) -> {
                             if (i == 0) {
-                                editDialog.show();
                             } else {
                                 performFileSearch(i - 1);
                             }
                         })
                         .show());
+
+        fab1.setOnClickListener(view -> {editDialog.show();});
     }
+
+    private void animateFab(){
+        if(isOpen){
+            fab.startAnimation(rotateBacward);
+            fab1.startAnimation(fabClose);
+            fab2.startAnimation(fabClose);
+            fab1.setClickable(false);
+            fab2.setClickable(false);
+            isOpen = false;
+        }else{
+            fab.startAnimation(rotateForward);
+            fab1.startAnimation(fabOpen);
+            fab2.startAnimation(fabOpen);
+            fab1.setClickable(true);
+            fab2.setClickable(true);
+            isOpen = true;
+        }
+    }
+
 
     @Override
     public void onPreviewSizeChosen(final Size size, final int rotation) {
@@ -366,5 +417,5 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
         startActivityForResult(intent, requestCode);
     }
 
-
 }
+
