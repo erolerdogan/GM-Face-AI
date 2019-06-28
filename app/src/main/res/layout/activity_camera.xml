@@ -51,7 +51,7 @@
         android:visibility="invisible"
         android:layout_marginRight="32dp"
         android:layout_marginBottom="160dp"
-        android:src="@drawable/ic_camera" />
+        android:src="@drawable/ic_people" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab3_del"
