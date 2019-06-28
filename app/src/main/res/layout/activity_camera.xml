@@ -42,7 +42,7 @@
         app:srcCompat="@android:drawable/ic_menu_delete" />
 
     <ImageButton
-        android:id="@+id/flipButton"
+        android:id="@+id/flipButton2"
         android:layout_width="77dp"
         android:layout_height="76dp"
         android:layout_alignParentLeft="true"

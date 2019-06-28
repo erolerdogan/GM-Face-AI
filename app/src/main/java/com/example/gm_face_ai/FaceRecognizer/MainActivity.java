@@ -35,6 +35,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -44,6 +45,7 @@ import com.example.gm_face_ai.FaceRecognizer.env.ImageUtils;
 import com.example.gm_face_ai.FaceRecognizer.env.Logger;
 import com.example.gm_face_ai.FaceRecognizer.tracking.MultiBoxTracker;
 import com.example.gm_face_ai.R;
+import com.google.android.gms.vision.CameraSource;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -99,6 +101,8 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
     private boolean initialized = false;
     private boolean training = false;
 
+    private int CameraWay = CameraSource.CAMERA_FACING_FRONT;
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -142,7 +146,37 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
                             }
                         })
                         .show());
+
+        final int[] count_button = {0};
+        ImageButton switch_camera = findViewById(R.id.flipButton2);
+        switch_camera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                count_button[0]++;
+                if(count_button[0] % 2 == 0) {
+
+                    switch_camera.setBackgroundResource(R.drawable.baseline_camera_front_black_24dp);
+                   // CameraWay = ;
+                    onPause();
+
+
+                }
+
+
+
+            }
+        });
+
     }
+
+   /* private void createCameraSource(int CameraWay) {
+
+
+
+    }*/
+
+
+
 
     @Override
     public void onPreviewSizeChosen(final Size size, final int rotation) {
