@@ -145,7 +145,7 @@ public class Classifier {
         CharSequence[] cs = new CharSequence[classNames.size() + 1];
         int idx = 1;
 
-        cs[0] = "+ Kişi Ekleme";
+        cs[0] = "-----Kayıtlı Kişiler-----";
         for (String name : classNames) {
             cs[idx++] = name;
         }
