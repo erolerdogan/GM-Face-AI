@@ -123,8 +123,8 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
         trainSnackbar = Snackbar.make(container, "Makina eğitiliyor...", Snackbar.LENGTH_INDEFINITE);
 
         fab = findViewById(R.id.fab);
-        fab1 = findViewById(R.id.fab2_add_person);
-        fab2 = findViewById(R.id.fab_camera);
+        fab1 = findViewById(R.id.fab1_add_person);
+        fab2 = findViewById(R.id.fab2_contacts);
         fab3 = findViewById(R.id.fab3_del);
         fab4 = findViewById(R.id.fab4_threshold);
 
@@ -150,8 +150,7 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
                 })
                 .create();
         AssetManager mgr = getAssets();
-        buttonDel = findViewById(R.id.fab3_del);
-        buttonDel.setOnClickListener(new View.OnClickListener() {
+        fab3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FileUtils.delfiles(mgr,FileUtils.DATA_FILE);
@@ -162,7 +161,7 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
             }
         });
 
-        fab.setOnClickListener(view -> {animateFab();});
+        fab.setOnClickListener(view -> animateFab());
         fab2.setOnClickListener(view ->
 
                 // Dialog window to choose name from list
@@ -171,6 +170,7 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
                         .setTitle(getString(R.string.select_name))
                         .setItems(classifier.getClassNames(), (dialogInterface, i) -> {
                             if (i == 0) {
+
                             } else {
                                 performFileSearch(i - 1);
                             }
