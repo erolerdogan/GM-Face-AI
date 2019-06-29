@@ -82,7 +82,22 @@ public abstract class CameraActivity extends AppCompatActivity
         setContentView(R.layout.activity_camera);
 
         if (hasPermission()) {
-            setFragment();
+
+            setFragment(chooseCameraFront());
+            final int[] press_counter = {0};
+            ImageButton switch_camera = findViewById(R.id.flipButton);
+            switch_camera.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    press_counter[0]++;
+                    if(press_counter[0] % 2 == 0) {
+                        setFragment(chooseCameraFront());
+                    }
+                    else {
+                        setFragment(chooseCameraBack());
+                    }
+                }
+            });
         } else {
             requestPermission();
         }
@@ -227,7 +242,7 @@ public abstract class CameraActivity extends AppCompatActivity
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED
                     && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                setFragment();
+                setFragment(chooseCameraFront());
             } else {
                 requestPermission();
             }
@@ -254,7 +269,7 @@ public abstract class CameraActivity extends AppCompatActivity
         }
     }
 
-    private String chooseCamera() {
+    private String chooseCameraFront() {
         final CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
         try {
             for (final String cameraId : manager.getCameraIdList()) {
@@ -282,8 +297,37 @@ public abstract class CameraActivity extends AppCompatActivity
         return null;
     }
 
-    protected void setFragment() {
-        String cameraId = chooseCamera();
+    private String chooseCameraBack() {
+        final CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+        try {
+            for (final String cameraId : manager.getCameraIdList()) {
+                final CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
+
+                // We don't use a front facing camera in this sample.
+                final Integer facing = characteristics.get(CameraCharacteristics.LENS_FACING);
+                if (facing != null && facing == CameraCharacteristics.LENS_FACING_FRONT) {
+                    continue;
+                }
+
+                final StreamConfigurationMap map =
+                        characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
+
+                if (map == null) {
+                    continue;
+                }
+
+                return cameraId;
+            }
+        } catch (CameraAccessException e) {
+            LOGGER.e(e, "Not allowed to access camera");
+        }
+
+        return null;
+    }
+
+    protected void setFragment(String x)
+    {
+        String cameraId = x;
 
         CameraConnectionFragment camera2Fragment =
                 CameraConnectionFragment.newInstance(
@@ -304,7 +348,6 @@ public abstract class CameraActivity extends AppCompatActivity
                 .commit();
 
     }
-
     protected void fillBytes(final Plane[] planes, final byte[][] yuvBytes) {
         // Because of the variable row stride it's not possible to know in
         // advance the actual necessary dimensions of the yuv planes.
