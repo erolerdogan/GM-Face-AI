@@ -286,13 +286,13 @@ public abstract class CameraActivity extends AppCompatActivity
         String cameraId = chooseCamera();
 
         CameraConnectionFragment camera2Fragment =
-                (CameraConnectionFragment) CameraConnectionFragment.newInstance(
+                CameraConnectionFragment.newInstance(
                         (size, rotation) -> {
                             previewHeight = size.getHeight();
                             previewWidth = size.getWidth();
                             CameraActivity.this.onPreviewSizeChosen(size, rotation);
                         },
-                        (View.OnClickListener) this,
+                        this,
                         getLayoutId(),
                         getDesiredPreviewFrameSize());
 

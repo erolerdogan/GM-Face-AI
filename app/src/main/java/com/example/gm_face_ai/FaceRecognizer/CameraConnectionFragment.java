@@ -63,7 +63,6 @@ import java.util.concurrent.TimeUnit;
 import com.example.gm_face_ai.FaceRecognizer.env.Logger;
 import com.example.gm_face_ai.R;
 
-@SuppressLint("ValidFragment")
 public class CameraConnectionFragment extends Fragment {
     private static final Logger LOGGER = new Logger();
 
@@ -217,7 +216,7 @@ public class CameraConnectionFragment extends Fragment {
     /**
      * A {@link OnImageAvailableListener} to receive frames as they are available.
      */
-    private final View.OnClickListener imageListener;
+    private final OnImageAvailableListener imageListener;
 
     /** The input size in pixels desired by TensorFlow (width and height of a square bitmap). */
     private final Size inputSize;
@@ -232,7 +231,7 @@ public class CameraConnectionFragment extends Fragment {
 
     private CameraConnectionFragment(
             final ConnectionCallback connectionCallback,
-            final View.OnClickListener imageListener,
+            final OnImageAvailableListener imageListener,
             final int layout,
             final Size inputSize) {
         this.cameraConnectionCallback = connectionCallback;
@@ -306,7 +305,7 @@ public class CameraConnectionFragment extends Fragment {
 
     public static CameraConnectionFragment newInstance(
             final ConnectionCallback callback,
-            final View.OnClickListener imageListener,
+            final OnImageAvailableListener imageListener,
             final int layout,
             final Size inputSize) {
         return new CameraConnectionFragment(callback, imageListener, layout, inputSize);
@@ -514,7 +513,7 @@ public class CameraConnectionFragment extends Fragment {
                     ImageReader.newInstance(
                             previewSize.getWidth(), previewSize.getHeight(), ImageFormat.YUV_420_888, 2);
 
-            previewReader.setOnImageAvailableListener((OnImageAvailableListener) imageListener, backgroundHandler);
+            previewReader.setOnImageAvailableListener( imageListener, backgroundHandler);
             previewRequestBuilder.addTarget(previewReader.getSurface());
 
             // Here, we create a CameraCaptureSession for camera preview.
