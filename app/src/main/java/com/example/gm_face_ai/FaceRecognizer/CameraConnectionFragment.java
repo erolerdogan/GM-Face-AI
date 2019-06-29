@@ -16,6 +16,7 @@
 
 package com.example.gm_face_ai.FaceRecognizer;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -406,6 +407,7 @@ public class CameraConnectionFragment extends Fragment {
     /**
      * Opens the camera specified by {@link CameraConnectionFragment#cameraId}.
      */
+    @SuppressLint("MissingPermission")
     private void openCamera(final int width, final int height) {
         setUpCameraOutputs();
         configureTransform(width, height);
@@ -511,7 +513,7 @@ public class CameraConnectionFragment extends Fragment {
                     ImageReader.newInstance(
                             previewSize.getWidth(), previewSize.getHeight(), ImageFormat.YUV_420_888, 2);
 
-            previewReader.setOnImageAvailableListener(imageListener, backgroundHandler);
+            previewReader.setOnImageAvailableListener( imageListener, backgroundHandler);
             previewRequestBuilder.addTarget(previewReader.getSurface());
 
             // Here, we create a CameraCaptureSession for camera preview.

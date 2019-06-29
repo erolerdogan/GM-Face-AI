@@ -181,13 +181,13 @@ public class ObjectTracker {
         private final float maxScore;
 
         public FrameChange(final float[] framePoints) {
-            float minScore = 100.0f;
-            float maxScore = -100.0f;
+            float minScore = -100.0f;
+            float maxScore = 100.0f;
 
             pointDeltas = new Vector<PointChange>(framePoints.length / KEYPOINT_STEP);
 
             for (int i = 0; i < framePoints.length; i += KEYPOINT_STEP) {
-                final float x1 = framePoints[i + 0] * DOWNSAMPLE_FACTOR;
+                final float x1 = framePoints[i] * DOWNSAMPLE_FACTOR;
                 final float y1 = framePoints[i + 1] * DOWNSAMPLE_FACTOR;
 
                 final boolean wasFound = framePoints[i + 2] > 0.0f;
