@@ -16,8 +16,8 @@
 
         <com.example.gm_face_ai.FaceSpotter.ui.camera.GraphicOverlay
             android:id="@+id/faceOverlay"
-            android:layout_width="200dp"
-            android:layout_height="200dp" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
     </com.example.gm_face_ai.FaceSpotter.ui.camera.CameraSourcePreview>
 

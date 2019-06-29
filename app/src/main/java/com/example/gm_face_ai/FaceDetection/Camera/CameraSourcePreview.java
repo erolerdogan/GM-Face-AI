@@ -113,7 +113,7 @@ public class CameraSourcePreview extends ViewGroup {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         int width = 1024;
-        int height = 768;
+        int height = 748;
         if (mCameraSource != null) {
             Size size = mCameraSource.getPreviewSize();
             if (size != null) {

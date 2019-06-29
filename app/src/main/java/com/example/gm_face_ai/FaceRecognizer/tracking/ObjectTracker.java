@@ -181,8 +181,8 @@ public class ObjectTracker {
         private final float maxScore;
 
         public FrameChange(final float[] framePoints) {
-            float minScore = -100.0f;
-            float maxScore = 100.0f;
+            float minScore = 100.0f;
+            float maxScore = -100.0f;
 
             pointDeltas = new Vector<PointChange>(framePoints.length / KEYPOINT_STEP);
 

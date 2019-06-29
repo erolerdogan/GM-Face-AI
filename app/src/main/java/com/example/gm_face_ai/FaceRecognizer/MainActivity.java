@@ -284,7 +284,7 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
                     lines.add("Rotation: " + sensorOrientation);
                     lines.add("Inference time: " + lastProcessingTimeMs + "ms");
 
-                    borderedText.drawLines(canvas, 10,  10, lines);
+                    borderedText.drawLines(canvas, 10,  canvas.getHeight() - 10, lines);
                 });
     }
 
