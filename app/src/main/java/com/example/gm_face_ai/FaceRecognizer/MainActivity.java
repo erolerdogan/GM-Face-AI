@@ -37,6 +37,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -177,6 +178,8 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
                         .show());
 
         fab1.setOnClickListener(view -> {editDialog.show();});
+
+
     }
 
     private void animateFab(){
