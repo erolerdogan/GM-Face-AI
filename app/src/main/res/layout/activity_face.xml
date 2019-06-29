@@ -11,6 +11,8 @@
         android:id="@+id/preview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#000"
+
 
         >
 
@@ -25,9 +27,10 @@
         android:id="@+id/flipButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:src="@drawable/baseline_camera_front_black_24dp"
+        android:tint="@android:color/white"
         android:background="#00FFFFFF"
         />
 
