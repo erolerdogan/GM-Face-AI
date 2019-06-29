@@ -16,6 +16,7 @@
 
 package com.example.gm_face_ai.FaceRecognizer;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -62,6 +63,7 @@ import java.util.concurrent.TimeUnit;
 import com.example.gm_face_ai.FaceRecognizer.env.Logger;
 import com.example.gm_face_ai.R;
 
+@SuppressLint("ValidFragment")
 public class CameraConnectionFragment extends Fragment {
     private static final Logger LOGGER = new Logger();
 
@@ -215,7 +217,7 @@ public class CameraConnectionFragment extends Fragment {
     /**
      * A {@link OnImageAvailableListener} to receive frames as they are available.
      */
-    private final OnImageAvailableListener imageListener;
+    private final View.OnClickListener imageListener;
 
     /** The input size in pixels desired by TensorFlow (width and height of a square bitmap). */
     private final Size inputSize;
@@ -230,7 +232,7 @@ public class CameraConnectionFragment extends Fragment {
 
     private CameraConnectionFragment(
             final ConnectionCallback connectionCallback,
-            final OnImageAvailableListener imageListener,
+            final View.OnClickListener imageListener,
             final int layout,
             final Size inputSize) {
         this.cameraConnectionCallback = connectionCallback;
@@ -304,7 +306,7 @@ public class CameraConnectionFragment extends Fragment {
 
     public static CameraConnectionFragment newInstance(
             final ConnectionCallback callback,
-            final OnImageAvailableListener imageListener,
+            final View.OnClickListener imageListener,
             final int layout,
             final Size inputSize) {
         return new CameraConnectionFragment(callback, imageListener, layout, inputSize);
@@ -406,6 +408,7 @@ public class CameraConnectionFragment extends Fragment {
     /**
      * Opens the camera specified by {@link CameraConnectionFragment#cameraId}.
      */
+    @SuppressLint("MissingPermission")
     private void openCamera(final int width, final int height) {
         setUpCameraOutputs();
         configureTransform(width, height);
@@ -511,7 +514,7 @@ public class CameraConnectionFragment extends Fragment {
                     ImageReader.newInstance(
                             previewSize.getWidth(), previewSize.getHeight(), ImageFormat.YUV_420_888, 2);
 
-            previewReader.setOnImageAvailableListener(imageListener, backgroundHandler);
+            previewReader.setOnImageAvailableListener((OnImageAvailableListener) imageListener, backgroundHandler);
             previewRequestBuilder.addTarget(previewReader.getSurface());
 
             // Here, we create a CameraCaptureSession for camera preview.

@@ -37,6 +37,8 @@ import android.view.KeyEvent;
 import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -284,13 +286,13 @@ public abstract class CameraActivity extends AppCompatActivity
         String cameraId = chooseCamera();
 
         CameraConnectionFragment camera2Fragment =
-                CameraConnectionFragment.newInstance(
+                (CameraConnectionFragment) CameraConnectionFragment.newInstance(
                         (size, rotation) -> {
                             previewHeight = size.getHeight();
                             previewWidth = size.getWidth();
                             CameraActivity.this.onPreviewSizeChosen(size, rotation);
                         },
-                        this,
+                        (View.OnClickListener) this,
                         getLayoutId(),
                         getDesiredPreviewFrameSize());
 
@@ -300,6 +302,7 @@ public abstract class CameraActivity extends AppCompatActivity
                 .beginTransaction()
                 .replace(R.id.container, camera2Fragment)
                 .commit();
+
     }
 
     protected void fillBytes(final Plane[] planes, final byte[][] yuvBytes) {

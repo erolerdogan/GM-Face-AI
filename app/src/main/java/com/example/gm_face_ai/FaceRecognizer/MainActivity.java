@@ -105,10 +105,12 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
     private FloatingActionButton fab1;
     private FloatingActionButton fab2;
     private FloatingActionButton fab3;
+    private FloatingActionButton fab4;
+
 
     Boolean isOpen = false;
 
-    Animation fabOpen, fabClose, rotateForward, rotateBacward ;
+    Animation fabOpen, fabClose, rotateForward, rotateBackward ;
 
 
     @Override
@@ -123,6 +125,7 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
         fab1 = findViewById(R.id.fab2_add_person);
         fab2 = findViewById(R.id.fab_camera);
         fab3 = findViewById(R.id.fab3_del);
+        fab4 = findViewById(R.id.fab4_threshold);
 
 
 
@@ -130,7 +133,7 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
         fabClose = AnimationUtils.loadAnimation(this,R.anim.fab_close);
 
         rotateForward = AnimationUtils.loadAnimation(this,R.anim.rotate_forward);
-        rotateBacward = AnimationUtils.loadAnimation(this,R.anim.rotate_backward);
+        rotateBackward = AnimationUtils.loadAnimation(this,R.anim.rotate_backward);
 
 
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_edittext, null);
@@ -159,8 +162,6 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
         });
 
         fab.setOnClickListener(view -> {animateFab();});
-
-
         fab2.setOnClickListener(view ->
 
                 // Dialog window to choose name from list
@@ -180,22 +181,29 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
 
     private void animateFab(){
         if(isOpen){
-            fab.startAnimation(rotateBacward);
+            fab.startAnimation(rotateBackward);
             fab1.startAnimation(fabClose);
             fab2.startAnimation(fabClose);
             fab3.startAnimation(fabClose);
+            fab4.startAnimation(fabClose);
+
             fab1.setClickable(false);
             fab2.setClickable(false);
             fab3.setClickable(false);
+            fab4.setClickable(false);
+
             isOpen = false;
         }else{
             fab.startAnimation(rotateForward);
             fab1.startAnimation(fabOpen);
             fab2.startAnimation(fabOpen);
             fab3.startAnimation(fabOpen);
+            fab4.startAnimation(fabOpen);
+
             fab1.setClickable(true);
             fab2.setClickable(true);
             fab3.setClickable(true);
+            fab4.setClickable(true);
             isOpen = true;
         }
     }
@@ -276,7 +284,7 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
                     lines.add("Rotation: " + sensorOrientation);
                     lines.add("Inference time: " + lastProcessingTimeMs + "ms");
 
-                    borderedText.drawLines(canvas, 10, canvas.getHeight() - 10, lines);
+                    borderedText.drawLines(canvas, 10,  10, lines);
                 });
     }
 

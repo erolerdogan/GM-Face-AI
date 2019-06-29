@@ -65,6 +65,18 @@
         android:tint="@android:color/white"
         app:srcCompat="@android:drawable/ic_menu_delete" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab4_threshold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:clickable="false"
+        android:visibility="invisible"
+        android:layout_marginRight="32dp"
+        android:layout_marginBottom="288dp"
+        android:tint="@android:color/white"
+        app:srcCompat="@drawable/ic_border" />
+
     <ImageButton
         android:id="@+id/flipButton"
         android:layout_width="77dp"
