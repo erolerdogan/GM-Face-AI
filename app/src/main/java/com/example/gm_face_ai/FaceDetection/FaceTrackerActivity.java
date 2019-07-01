@@ -56,7 +56,7 @@ public final class FaceTrackerActivity extends AppCompatActivity {
 
 
 
-
+        //Switching camera between front and rear
         final int[] pressBut = {0};
         final ImageButton btnConv = findViewById(R.id.imageButton);
         btnConv.setOnClickListener(new View.OnClickListener() {

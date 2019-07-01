@@ -108,7 +108,18 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         float y = translateY(face.getPosition().y + face.getHeight() / 2);
         canvas.drawCircle(x, y, FACE_POSITION_RADIUS, mFacePositionPaint);
         // canvas.drawText("id: " + mFaceId, x + ID_X_OFFSET, y + ID_Y_OFFSET, mIdPaint);
-        canvas.drawText("Smile: " + String.format("%.2f", face.getIsSmilingProbability()), x + ID_X_OFFSET * 2, y + ID_Y_OFFSET * 2, mIdPaint);
+
+        if(face.getIsSmilingProbability() > 0.5) {
+
+            canvas.drawText("Smile: " + String.format("%.2f", face.getIsSmilingProbability()), x + ID_X_OFFSET * 2, y + ID_Y_OFFSET * 2, mIdPaint);
+
+        }
+        else {
+
+            canvas.drawText("Let's Smilee! " + String.format("%.2f", face.getIsSmilingProbability()), x + ID_X_OFFSET * 2, y + ID_Y_OFFSET * 2, mIdPaint);
+
+        }
+
         canvas.drawText("Left eye: " + String.format("%.2f", face.getIsRightEyeOpenProbability()), x + ID_X_OFFSET * 4, y - ID_Y_OFFSET * 2, mIdPaint);
         canvas.drawText("Right eye: " + String.format("%.2f", face.getIsLeftEyeOpenProbability()), x - ID_X_OFFSET * 2, y - ID_Y_OFFSET * 2, mIdPaint);
 
@@ -126,12 +137,14 @@ class FaceGraphic extends GraphicOverlay.Graphic {
     }
     private void Land(Canvas canvas){
 
+
+
         double scale =Math.min(canvas.getWidth() / 1024, canvas.getHeight() / 768);
 
         for (Landmark landmark : mFace.getLandmarks()) {
-        int cx = (int) (landmark.getPosition().x *scale );
+        int cx = (int) (landmark.getPosition().x *scale);
         int cy = (int) (landmark.getPosition().y *scale);
-        canvas.drawCircle(cx, cy, 10, mBoxPaint);
+        //canvas.drawCircle(cx, cy, 10, mBoxPaint);
     }
     }
 
