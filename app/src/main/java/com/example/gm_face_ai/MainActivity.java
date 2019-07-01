@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.gm_face_ai.FaceDetection.FaceTrackerActivity;
@@ -22,15 +23,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        TextView txtInfo= findViewById(R.id.textInfo);
-        txtInfo.setText("GENERAL MOBİLE AR-GE MERKEZİNDE GM Çalışanları Tarafından Oluşturuldu. \n Daha Fazla Bilgi için : https://github.com/general-mobile ");
         Snackbar sb;
         ConstraintLayout container = findViewById(R.id.container2);
         sb =  Snackbar.make(container, "Bu Hizmet şuan da geliştiriliyor...", Snackbar.LENGTH_INDEFINITE);
 
 
 
-        Button btnFaceDet = findViewById(R.id.btnFaceDet);
+        ImageButton btnFaceDet = findViewById(R.id.btnFaceDet);
         btnFaceDet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -40,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        Button btnFaceSpot = findViewById(R.id.btnFaceDet2);
+        ImageButton btnFaceSpot = findViewById(R.id.btnFaceDet2);
         btnFaceSpot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -50,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        Button btnFaceRec = findViewById(R.id.btnFaceDet3);
+        ImageButton btnFaceRec = findViewById(R.id.btnFaceDet3);
         btnFaceRec.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -61,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button btnLandmark = findViewById(R.id.btnFaceDet4);
+        ImageButton btnLandmark = findViewById(R.id.btnFaceDet4);
         btnLandmark.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

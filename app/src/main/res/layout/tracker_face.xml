@@ -33,5 +33,49 @@
         android:src="@drawable/baseline_camera_front_black_24dp"
         android:tint="@android:color/white" />
 
+    <!--ImageButton
+        android:id="@+id/child_default"
+        android:layout_width="161dp"
+        android:layout_height="167dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="3dp"
+        android:background="#00FFFFFF"
+        android:src="@drawable/ic_child_care"
+        android:tint="@android:color/white" /-->
+
+    <ImageButton
+        android:id="@+id/smiling"
+        android:layout_width="161dp"
+        android:layout_height="167dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="3dp"
+        android:background="#00FFFFFF"
+        android:src="@drawable/smiling"
+        android:tint="@android:color/white" />
+
+    <ImageButton
+        android:id="@+id/sad"
+        android:layout_width="161dp"
+        android:layout_height="167dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="3dp"
+        android:background="#00FFFFFF"
+        android:src="@drawable/sad"
+        android:tint="@android:color/white" />
+
+   <!--ImageButton
+        android:id="@+id/teasing"
+        android:layout_width="161dp"
+        android:layout_height="167dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="3dp"
+        android:background="#00FFFFFF"
+        android:src="@drawable/teasing"
+        android:tint="@android:color/white" /-->
+
 </RelativeLayout>
 
