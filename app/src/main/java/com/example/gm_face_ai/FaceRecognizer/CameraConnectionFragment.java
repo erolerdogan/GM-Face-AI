@@ -574,6 +574,7 @@ public class CameraConnectionFragment extends Fragment {
         }
         final int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
         final Matrix matrix = new Matrix();
+
         final RectF viewRect = new RectF(0, 0, viewWidth, viewHeight);
         final RectF bufferRect = new RectF(0, 0, previewSize.getHeight(), previewSize.getWidth());
         final float centerX = viewRect.centerX();
@@ -586,10 +587,11 @@ public class CameraConnectionFragment extends Fragment {
                             (float) viewHeight / previewSize.getHeight(),
                             (float) viewWidth / previewSize.getWidth());
             matrix.postScale(scale, scale, centerX, centerY);
-            matrix.postRotate(90 * (rotation - 2), centerX, centerY);
+            matrix.postRotate(0, centerX, centerY);
         } else if (Surface.ROTATION_180 == rotation) {
             matrix.postRotate(180, centerX, centerY);
         }
+
         textureView.setTransform(matrix);
     }
 

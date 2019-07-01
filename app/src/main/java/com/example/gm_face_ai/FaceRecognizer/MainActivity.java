@@ -120,7 +120,7 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
 
         FrameLayout container = findViewById(R.id.container);
         initSnackbar = Snackbar.make(container, "Yükleniyor...", Snackbar.LENGTH_INDEFINITE);
-        trainSnackbar = Snackbar.make(container, "Makina eğitiliyor...", Snackbar.LENGTH_INDEFINITE);
+        trainSnackbar = Snackbar.make(container, "Makine eğitiliyor...", Snackbar.LENGTH_INDEFINITE);
 
         fab = findViewById(R.id.fab);
         fab1 = findViewById(R.id.fab1_add_person);
@@ -395,7 +395,7 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
 
         if (resultCode == RESULT_OK) {
             trainSnackbar.show();
-            button.setEnabled(false);
+            fab1.setEnabled(false);
             training = true;
 
             ClipData clipData = data.getClipData();
@@ -418,7 +418,7 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
                 }
                 runOnUiThread(() -> {
                     trainSnackbar.dismiss();
-                    button.setEnabled(true);
+                    fab1.setEnabled(true);
                 });
             }).start();
 
