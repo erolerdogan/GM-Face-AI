@@ -105,7 +105,7 @@ public class MultiBoxTracker {
 
         boxPaint.setColor(Color.RED);
         boxPaint.setStyle(Style.STROKE);
-        boxPaint.setStrokeWidth(12.0f);
+        boxPaint.setStrokeWidth(8.0f);
         boxPaint.setStrokeCap(Cap.ROUND);
         boxPaint.setStrokeJoin(Join.ROUND);
         boxPaint.setStrokeMiter(100);

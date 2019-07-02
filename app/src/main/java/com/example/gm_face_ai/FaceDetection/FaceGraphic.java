@@ -132,29 +132,7 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         float bottom = y + yOffset;
 
         canvas.drawRect(left, top, right, bottom, mBoxPaint);
-        //Land(canvas);
 
-    }
-    private void Land(Canvas canvas){
-
-<<<<<<< HEAD
-        double scale =Math.min(canvas.getWidth() / mFace.getHeight(), canvas.getHeight() / mFace.getWidth());
-=======
-
-
-        double scale =Math.min(canvas.getWidth() / 1024, canvas.getHeight() / 768);
->>>>>>> 1514a4b3a53075f52a3a1770ce54754f864890aa
-
-        for (Landmark landmark : mFace.getLandmarks()) {
-        int cx = (int) (landmark.getPosition().x *scale);
-        int cy = (int) (landmark.getPosition().y *scale);
-<<<<<<< HEAD
-        canvas.drawCircle(cx, cy, 10, mBoxPaint);
-        }
-=======
-        //canvas.drawCircle(cx, cy, 10, mBoxPaint);
-    }
->>>>>>> 1514a4b3a53075f52a3a1770ce54754f864890aa
     }
 
 }
