@@ -7,12 +7,12 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.graphics.Camera;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -30,7 +30,6 @@ import com.google.android.gms.vision.face.FaceDetector;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,7 +43,12 @@ public final class FaceTrackerActivity extends AppCompatActivity {
     // permission request codes need to be < 256
     private static final int RC_HANDLE_CAMERA_PERM = 2;
 
+
+
     private Map<Integer, PointF> mPreviousLandmarkPositions = new HashMap<>();
+
+
+
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -54,6 +58,7 @@ public final class FaceTrackerActivity extends AppCompatActivity {
         mPreview = (CameraSourcePreview) findViewById(R.id.preview);
         mGraphicOverlay = (GraphicOverlay) findViewById(R.id.faceOverlay);
 
+        //Image view for emojis
 
 
         //Switching camera between front and rear
@@ -214,11 +219,11 @@ public final class FaceTrackerActivity extends AppCompatActivity {
     private class GraphicFaceTracker extends Tracker<Face> {
         private GraphicOverlay mOverlay;
         private FaceGraphic mFaceGraphic;
-
+        ImageView emoji = findViewById(R.id.imageViewEmoji);
 
         private float lefteyeProb = 0.0f;
 
-        GraphicFaceTracker(GraphicOverlay overlay) {
+        GraphicFaceTracker(GraphicOverlay overlay ) {
             mOverlay = overlay;
             mFaceGraphic = new FaceGraphic(overlay);
         }
@@ -237,7 +242,7 @@ public final class FaceTrackerActivity extends AppCompatActivity {
 
             mOverlay.add(mFaceGraphic);
             mFaceGraphic.updateFace(face);
-
+            EmojiResult(emoji,face.getIsSmilingProbability());
 
             lefteyeProb = face.getIsLeftEyeOpenProbability();
             if (lefteyeProb <= 0.2f) {
@@ -259,6 +264,17 @@ public final class FaceTrackerActivity extends AppCompatActivity {
     private void EyeProcess(float f) {
         if (f < 0.2f) {
             Log.i(TAG, "Left Eye Close"); // left eye Clsosed process -
+        }
+    }
+    private void EmojiResult(ImageView img ,float smilinProb){
+        if(smilinProb <= 0.01f){
+            img.setImageResource(R.drawable.emoticonsad);
+        }
+        else if(smilinProb >0.02f && smilinProb<=0.9f){
+            img.setImageResource(R.drawable.emoticonneutral);
+        }
+        else {
+            img.setImageResource(R.drawable.emoticonhappy);
         }
     }
 
