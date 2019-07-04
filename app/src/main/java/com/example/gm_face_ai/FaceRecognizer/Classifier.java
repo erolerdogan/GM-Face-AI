@@ -40,6 +40,8 @@ import com.example.gm_face_ai.FaceRecognizer.wrapper.FaceNet;
  * Generic interface for interacting with different recognition engines.
  */
 public class Classifier {
+    public   Float THRESHOLD = 0.5f;
+
     /**
      * An immutable result returned by a Classifier describing what was recognized.
      */
@@ -177,7 +179,8 @@ public class Classifier {
                 Float prob = pair.second;
 
                 String name;
-                if (prob > 0.5)
+                if (prob > THRESHOLD)
+
                     name = classNames.get(pair.first);
                 else
                     name = "Bilinemiyor";
@@ -224,7 +227,6 @@ public class Classifier {
     int addPerson(String name) {
         FileUtils.appendText(name, FileUtils.LABEL_FILE);
         classNames.add(name);
-
         return classNames.size();
     }
 

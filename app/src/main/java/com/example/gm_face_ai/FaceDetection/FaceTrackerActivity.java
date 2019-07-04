@@ -42,9 +42,6 @@ public final class FaceTrackerActivity extends AppCompatActivity {
     private static final int RC_HANDLE_GMS = 9001;
     // permission request codes need to be < 256
     private static final int RC_HANDLE_CAMERA_PERM = 2;
-
-
-
     private Map<Integer, PointF> mPreviousLandmarkPositions = new HashMap<>();
 
 
@@ -57,9 +54,6 @@ public final class FaceTrackerActivity extends AppCompatActivity {
 
         mPreview = (CameraSourcePreview) findViewById(R.id.preview);
         mGraphicOverlay = (GraphicOverlay) findViewById(R.id.faceOverlay);
-
-        //Image view for emojis
-
 
         //Switching camera between front and rear
         final int[] pressBut = {0};
