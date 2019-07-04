@@ -18,6 +18,7 @@ package com.example.gm_face_ai.FaceRecognizer;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
@@ -37,17 +38,17 @@ import android.view.KeyEvent;
 import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.gm_face_ai.FaceRecognizer.env.ImageUtils;
+import com.example.gm_face_ai.FaceRecognizer.env.Logger;
+import com.example.gm_face_ai.R;
+
 import java.nio.ByteBuffer;
 
-import com.example.gm_face_ai.FaceRecognizer.env.Logger;
-import com.example.gm_face_ai.FaceRecognizer.env.ImageUtils;
-import com.example.gm_face_ai.R;
 
 public abstract class CameraActivity extends AppCompatActivity
         implements OnImageAvailableListener {
@@ -73,6 +74,7 @@ public abstract class CameraActivity extends AppCompatActivity
     private Runnable postInferenceCallback;
     private Runnable imageConverter;
 
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         LOGGER.d("onCreate " + this);
@@ -80,20 +82,21 @@ public abstract class CameraActivity extends AppCompatActivity
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         setContentView(R.layout.activity_camera);
+        //<Intent intent = new Intent(getApplicationContext(), MainActivity.class);
 
         if (hasPermission()) {
-
             setFragment(chooseCameraFront());
             final int[] press_counter = {0};
             ImageButton switch_camera = findViewById(R.id.flipButton);
             switch_camera.setOnClickListener(new View.OnClickListener() {
+
                 @Override
                 public void onClick(View view) {
                     press_counter[0]++;
-                    if(press_counter[0] % 2 == 0) {
+                    if (press_counter[0] % 2 == 0) {
                         setFragment(chooseCameraFront());
-                    }
-                    else {
+
+                    } else {
                         setFragment(chooseCameraBack());
                     }
                 }
@@ -117,8 +120,8 @@ public abstract class CameraActivity extends AppCompatActivity
     }
 
     /**
-    * Callback for Camera2 API
-    */
+     * Callback for Camera2 API
+     */
     @Override
     public void onImageAvailable(final ImageReader reader) {
         //We need wait until we have some size from onPreviewSizeChosen
@@ -235,6 +238,7 @@ public abstract class CameraActivity extends AppCompatActivity
         }
     }
 
+
     @Override
     public void onRequestPermissionsResult(
             final int requestCode, final String[] permissions, final int[] grantResults) {
@@ -265,7 +269,7 @@ public abstract class CameraActivity extends AppCompatActivity
                 Toast.makeText(CameraActivity.this,
                         "Camera AND storage permission are required for this demo", Toast.LENGTH_LONG).show();
             }
-            requestPermissions(new String[] {PERMISSION_CAMERA, PERMISSION_STORAGE}, PERMISSIONS_REQUEST);
+            requestPermissions(new String[]{PERMISSION_CAMERA, PERMISSION_STORAGE}, PERMISSIONS_REQUEST);
         }
     }
 
@@ -275,7 +279,6 @@ public abstract class CameraActivity extends AppCompatActivity
             for (final String cameraId : manager.getCameraIdList()) {
                 final CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
 
-                final float[] trans = characteristics.get(CameraCharacteristics.LENS_POSE_TRANSLATION);
 
                 // We don't use a front facing camera in this sample.
                 final Integer facing = characteristics.get(CameraCharacteristics.LENS_FACING);
@@ -328,8 +331,7 @@ public abstract class CameraActivity extends AppCompatActivity
         return null;
     }
 
-    protected void setFragment(String x)
-    {
+    protected void setFragment(String x) {
         String cameraId = x;
 
         CameraConnectionFragment camera2Fragment =
@@ -351,6 +353,7 @@ public abstract class CameraActivity extends AppCompatActivity
                 .commit();
 
     }
+
     protected void fillBytes(final Plane[] planes, final byte[][] yuvBytes) {
         // Because of the variable row stride it's not possible to know in
         // advance the actual necessary dimensions of the yuv planes.
@@ -382,7 +385,8 @@ public abstract class CameraActivity extends AppCompatActivity
         }
     }
 
-    public void onSetDebug(final boolean debug) {}
+    public void onSetDebug(final boolean debug) {
+    }
 
     @Override
     public boolean onKeyDown(final int keyCode, final KeyEvent event) {
@@ -417,6 +421,9 @@ public abstract class CameraActivity extends AppCompatActivity
     protected abstract void processImage();
 
     protected abstract void onPreviewSizeChosen(final Size size, final int rotation);
+
     protected abstract int getLayoutId();
+
     protected abstract Size getDesiredPreviewFrameSize();
+
 }

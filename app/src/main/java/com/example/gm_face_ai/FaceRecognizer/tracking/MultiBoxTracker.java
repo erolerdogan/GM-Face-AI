@@ -27,6 +27,7 @@ import android.graphics.RectF;
 import android.text.TextUtils;
 import android.util.Pair;
 import android.util.TypedValue;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.LinkedList;
@@ -34,7 +35,7 @@ import java.util.List;
 import java.util.Queue;
 
 
-
+import com.example.gm_face_ai.FaceRecognizer.CameraActivity;
 import com.example.gm_face_ai.FaceRecognizer.Classifier.Recognition;
 import com.example.gm_face_ai.FaceRecognizer.env.ImageUtils;
 import com.example.gm_face_ai.FaceRecognizer.env.Logger;
@@ -59,7 +60,7 @@ public class MultiBoxTracker {
     private static final float MARGINAL_CORRELATION = 0.75f;
 
     // Consider object to be lost if correlation falls below this threshold.
-    private static final float MIN_CORRELATION = 0.3f;
+    private static final float MIN_CORRELATION = 0.2f;
 
     private static final int[] COLORS = {
             Color.BLUE, Color.RED, Color.GREEN, Color.YELLOW, Color.CYAN, Color.MAGENTA, Color.WHITE,
@@ -120,7 +121,8 @@ public class MultiBoxTracker {
         return frameToCanvasMatrix;
     }
 
-    public synchronized void drawDebug(final Canvas canvas) {
+
+    public synchronized void drawDebug(final Canvas canvas,TextView txt) {
         final Paint textPaint = new Paint();
         textPaint.setColor(Color.WHITE);
         textPaint.setTextSize(60.0f);
@@ -132,9 +134,9 @@ public class MultiBoxTracker {
 
         for (final Pair<Float, RectF> detection : screenRects) {
             final RectF rect = detection.second;
-            canvas.drawRect(rect, boxPaint);
+            //canvas.drawRect(rect, boxPaint);
             canvas.drawText("" + detection.first, rect.left, rect.top, textPaint);
-            borderedText.drawText(canvas, rect.centerX(), rect.centerY(), "" + detection.first);
+            //borderedText.drawText(canvas, rect.centerX(), rect.centerY(), "" + detection.first);
         }
 
         if (objectTracker == null) {
@@ -149,7 +151,9 @@ public class MultiBoxTracker {
 
             if (getFrameToCanvasMatrix().mapRect(trackedPos)) {
                 final String labelString = String.format("%.2f", trackedObject.getCurrentCorrelation());
-                borderedText.drawText(canvas, trackedPos.right, trackedPos.bottom, labelString);
+
+              //  borderedText.drawText(canvas, trackedPos.right, trackedPos.bottom, labelString);
+                txt.setText(labelString);
             }
         }
 
@@ -163,7 +167,7 @@ public class MultiBoxTracker {
         processResults(timestamp, results, frame);
     }
 
-    public synchronized void draw(final Canvas canvas) {
+    public synchronized void draw(final Canvas canvas,TextView txt) {
         final boolean rotated = sensorOrientation % 180 == 90;
         final float multiplier =
                 Math.min(canvas.getHeight() / (float) (rotated ? frameWidth : frameHeight),
@@ -186,13 +190,17 @@ public class MultiBoxTracker {
             boxPaint.setColor(recognition.color);
 
             final float cornerSize = Math.min(trackedPos.width(), trackedPos.height()) / 8.0f;
-            canvas.drawRoundRect(trackedPos, cornerSize, cornerSize, boxPaint);
+            //canvas.drawRoundRect(trackedPos, cornerSize, cornerSize, boxPaint);
 
-            final String labelString =
-                    !TextUtils.isEmpty(recognition.title)
-                            ? String.format("%s %.2f", recognition.title, recognition.detectionConfidence)
-                            : String.format("%.2f", recognition.detectionConfidence);
-            borderedText.drawText(canvas, trackedPos.left + cornerSize, trackedPos.bottom, labelString);
+//            final String labelString =
+//                    !TextUtils.isEmpty(recognition.title)
+//                            ? String.format("%s %.2f", recognition.title, recognition.detectionConfidence)
+//                            : String.format("%.2f", recognition.detectionConfidence);
+            final String labelString = recognition.title;
+
+
+            //borderedText.drawText(canvas, trackedPos.left + cornerSize, trackedPos.bottom, labelString);
+            txt.setText(labelString);
         }
     }
 
@@ -240,7 +248,6 @@ public class MultiBoxTracker {
                 logger.v("Removing tracked object %s because NCC is %.2f", trackedObject, correlation);
                 trackedObject.stopTracking();
                 trackedObjects.remove(recognition);
-
                 availableColors.add(recognition.color);
             }
         }

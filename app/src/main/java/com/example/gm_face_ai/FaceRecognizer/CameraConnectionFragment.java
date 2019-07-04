@@ -79,10 +79,10 @@ public class CameraConnectionFragment extends Fragment {
     private static final String FRAGMENT_DIALOG = "dialog";
 
     static {
-        ORIENTATIONS.append(Surface.ROTATION_0, 90);
-        ORIENTATIONS.append(Surface.ROTATION_90, 0);
-        ORIENTATIONS.append(Surface.ROTATION_180, 270);
-        ORIENTATIONS.append(Surface.ROTATION_270, 180);
+        ORIENTATIONS.append(Surface.ROTATION_0, 0);
+        ORIENTATIONS.append(Surface.ROTATION_90, 90);
+        ORIENTATIONS.append(Surface.ROTATION_180, 180);
+        ORIENTATIONS.append(Surface.ROTATION_270, 90);
     }
 
     /**
@@ -531,6 +531,7 @@ public class CameraConnectionFragment extends Fragment {
                             // When the session is ready, we start displaying the preview.
                             captureSession = cameraCaptureSession;
                             try {
+                               // previewRequestBuilder.set(CaptureRequest.CONTROL_SCENE_MODE,CaptureRequest.CONTROL_SCENE_MODE_DISABLED);
                                 // Auto focus should be continuous for camera preview.
                                 previewRequestBuilder.set(
                                         CaptureRequest.CONTROL_AF_MODE,
@@ -589,7 +590,7 @@ public class CameraConnectionFragment extends Fragment {
             matrix.postScale(scale, scale, centerX, centerY);
             matrix.postRotate(0, centerX, centerY);
         } else if (Surface.ROTATION_180 == rotation) {
-            matrix.postRotate(180, centerX, centerY);
+            matrix.postRotate(180, 0-centerX, centerY);
         }
 
         textureView.setTransform(matrix);

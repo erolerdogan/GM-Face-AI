@@ -7,5 +7,9 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+    <style name="MyNumberPickerTheme" parent="@android:style/Widget.Material.NumberPicker">
+    <item name="colorControlNormal">#01579b</item>
+    <item name="android:background">#64b5f6</item>
+</style>
 
 </resources>

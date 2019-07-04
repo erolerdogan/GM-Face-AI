@@ -22,4 +22,5 @@
     <string name="menu_settings">Settings</string>
     <string name="menu_navigation">Navigation</string>
     <string name="development_info">GENERAL MOBİLE AR-GE MERKEZİNDE GM Çalışanları Tarafından Oluşturuldu. \nDaha Fazla Bilgi için : https://github.com/general-mobile </string>
+    <string name="todo">TODO</string>
 </resources>

@@ -37,7 +37,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
+import android.widget.NumberPicker;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -67,7 +68,7 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
     private static final int FACE_SIZE = 160;
     private static final int CROP_SIZE = 300;
 
-    private static final Size DESIRED_PREVIEW_SIZE = new Size(640, 480);
+    private static final Size DESIRED_PREVIEW_SIZE = new Size(1024, 768);
 
     private static final boolean SAVE_PREVIEW_BITMAP = false;
     private static final float TEXT_SIZE_DIP = 10;
@@ -107,11 +108,14 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
     private FloatingActionButton fab2;
     private FloatingActionButton fab3;
     private FloatingActionButton fab4;
-
+    private TextView txtName;
+    private TextView txtHold;
+    public float THRESHOLD1;
 
     Boolean isOpen = false;
 
-    Animation fabOpen, fabClose, rotateForward, rotateBackward ;
+    Animation fabOpen, fabClose, rotateForward, rotateBackward;
+    private String TAG = "TAG";
 
 
     @Override
@@ -127,15 +131,33 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
         fab2 = findViewById(R.id.fab2_contacts);
         fab3 = findViewById(R.id.fab3_del);
         fab4 = findViewById(R.id.fab4_threshold);
+        txtName = findViewById(R.id.txtName);
+        THRESHOLD1 = 0.51f;
+
+        txtHold = findViewById(R.id.txtThreshold);
+        txtHold.setText("Güncel eşik değer : " + THRESHOLD1);
+        fabOpen = AnimationUtils.loadAnimation(this, R.anim.fab_open);
+        fabClose = AnimationUtils.loadAnimation(this, R.anim.fab_close);
+
+        rotateForward = AnimationUtils.loadAnimation(this, R.anim.rotate_forward);
+        rotateBackward = AnimationUtils.loadAnimation(this, R.anim.rotate_backward);
 
 
-
-        fabOpen = AnimationUtils.loadAnimation(this,R.anim.fab_open);
-        fabClose = AnimationUtils.loadAnimation(this,R.anim.fab_close);
-
-        rotateForward = AnimationUtils.loadAnimation(this,R.anim.rotate_forward);
-        rotateBackward = AnimationUtils.loadAnimation(this,R.anim.rotate_backward);
-
+        View dialogNum = getLayoutInflater().inflate(R.layout.number_picker_layout, null);
+        NumberPicker picker1 = (NumberPicker) dialogNum.findViewById(R.id.number_picker);
+        picker1.setMaxValue(80);
+        picker1.setMinValue(30);
+        picker1.setValue((int) THRESHOLD1 * 100);
+        int[] pickerValues = new int[50];
+        AlertDialog editDialogNum = new AlertDialog.Builder(MainActivity.this)
+                .setTitle("Eşik değer")
+                .setView(dialogNum)
+                .setPositiveButton("Tamam", (dialogInterface, i) -> {
+                    THRESHOLD1 = picker1.getValue();
+                    classifier.THRESHOLD = (float) THRESHOLD1 / 100;
+                    txtHold.setText("Güncel eşik değer : " + classifier.THRESHOLD);
+                })
+                .create();
 
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_edittext, null);
         EditText editText = dialogView.findViewById(R.id.edit_text);
@@ -153,12 +175,22 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
         fab3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FileUtils.delfiles(mgr,FileUtils.DATA_FILE);
-                FileUtils.delfiles(mgr,FileUtils.MODEL_FILE);
-                FileUtils.delfiles(mgr,FileUtils.LABEL_FILE);
+                FileUtils.delfiles(mgr, FileUtils.DATA_FILE);
+                FileUtils.delfiles(mgr, FileUtils.MODEL_FILE);
+                FileUtils.delfiles(mgr, FileUtils.LABEL_FILE);
                 classifier.delClasses();
-
+                Intent intent = new Intent(getApplicationContext(), com.example.gm_face_ai.MainActivity.class);
+                startActivity(intent);
             }
+        });
+
+
+        fab4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                editDialogNum.show();
+            }
+
         });
 
         fab.setOnClickListener(view -> animateFab());
@@ -177,13 +209,13 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
                         })
                         .show());
 
-        fab1.setOnClickListener(view -> {editDialog.show();});
-
-
+        fab1.setOnClickListener(view -> {
+            editDialog.show();
+        });
     }
 
-    private void animateFab(){
-        if(isOpen){
+    private void animateFab() {
+        if (isOpen) {
             fab.startAnimation(rotateBackward);
             fab1.startAnimation(fabClose);
             fab2.startAnimation(fabClose);
@@ -196,7 +228,7 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
             fab4.setClickable(false);
 
             isOpen = false;
-        }else{
+        } else {
             fab.startAnimation(rotateForward);
             fab1.startAnimation(fabOpen);
             fab2.startAnimation(fabOpen);
@@ -221,14 +253,15 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
                 TypedValue.applyDimension(
                         TypedValue.COMPLEX_UNIT_DIP, TEXT_SIZE_DIP, getResources().getDisplayMetrics());
         borderedText = new BorderedText(textSizePx);
-        borderedText.setTypeface(Typeface.MONOSPACE);
+        // it will be   borderedText.setTypeface(Typeface.MONOSPACE);
+        borderedText.setTypeface(Typeface.DEFAULT);
 
         tracker = new MultiBoxTracker(this);
 
         previewWidth = size.getWidth();
         previewHeight = size.getHeight();
 
-        sensorOrientation =   rotation - getScreenOrientation();
+        sensorOrientation = rotation - getScreenOrientation();
         LOGGER.i("Camera orientation relative to screen canvas: %d", sensorOrientation);
 
         LOGGER.i("Initializing at size %dx%d", previewWidth, previewHeight);
@@ -247,9 +280,9 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
         trackingOverlay = findViewById(R.id.tracking_overlay);
         trackingOverlay.addCallback(
                 canvas -> {
-                    tracker.draw(canvas);
+                    tracker.draw(canvas, txtName);
                     if (isDebug()) {
-                        tracker.drawDebug(canvas);
+                        tracker.drawDebug(canvas, txtName);
                     }
                 });
 
@@ -287,7 +320,7 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
                     lines.add("Rotation: " + sensorOrientation);
                     lines.add("Inference time: " + lastProcessingTimeMs + "ms");
 
-                    borderedText.drawLines(canvas, 10,  canvas.getHeight() - 10, lines);
+                    borderedText.drawLines(canvas, 10, canvas.getHeight() - 10, lines);
                 });
     }
 
@@ -433,6 +466,5 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
 
         startActivityForResult(intent, requestCode);
     }
-
 }
 
