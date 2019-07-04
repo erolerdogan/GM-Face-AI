@@ -8,8 +8,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.example.gm_face_ai.FaceDetection.FaceTrackerActivity;
@@ -17,12 +19,11 @@ import com.example.gm_face_ai.FaceSpotter.FaceActivity;
 import com.google.android.material.snackbar.Snackbar;
 
 public class MainActivity extends AppCompatActivity {
-
+    final boolean[] CameraW2 = {true}; // True is Front Cam , false is Back Cam.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         Snackbar sb;
         ConstraintLayout container = findViewById(R.id.container2);
         sb =  Snackbar.make(container, "Bu Hizmet şuan da geliştiriliyor...", Snackbar.LENGTH_INDEFINITE);
@@ -55,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Log.i("TAG: ","Button Clicked");
                 Intent intent = new Intent(getApplicationContext(), com.example.gm_face_ai.FaceRecognizer.MainActivity.class);
+                intent.putExtra("CameraWay2",CameraW2[0]);
                 startActivity(intent);
 
             }
@@ -72,6 +74,22 @@ public class MainActivity extends AppCompatActivity {
                 });
                 sb.show();
 
+            }
+        });
+
+        Switch swCam = findViewById(R.id.swCamera);
+        swCam.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (swCam.isChecked()){
+                    Log.i("SWBUTTON : ","Back Cam Open");
+                    CameraW2[0] =false;
+
+                }
+                else {
+                    Log.i("SWBUTTON : ","Front Cam Open");
+                    CameraW2[0] = true;
+                }
             }
         });
     }
