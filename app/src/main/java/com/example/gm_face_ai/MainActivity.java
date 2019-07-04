@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         ConstraintLayout container = findViewById(R.id.container2);
         sb =  Snackbar.make(container, "Bu Hizmet şuan da geliştiriliyor...", Snackbar.LENGTH_INDEFINITE);
 
-
+//deneme
 
         ImageButton btnFaceDet = findViewById(R.id.btnFaceDet);
         btnFaceDet.setOnClickListener(new View.OnClickListener() {
