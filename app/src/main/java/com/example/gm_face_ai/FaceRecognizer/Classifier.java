@@ -40,7 +40,7 @@ import com.example.gm_face_ai.FaceRecognizer.wrapper.FaceNet;
  * Generic interface for interacting with different recognition engines.
  */
 public class Classifier {
-    public   Float THRESHOLD = 0.5f;
+    public   Float THRESHOLD = 0.35f;
 
     /**
      * An immutable result returned by a Classifier describing what was recognized.

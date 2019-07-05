@@ -33,6 +33,7 @@
         <activity android:name=".FaceDetection.FaceTrackerActivity"></activity>
         <activity android:name=".FaceSpotter.FaceActivity"></activity>
         <activity android:name=".FaceRecognizer.MainActivity"></activity>
+        <activity android:name=".FaceRecognizer.StartActivity"></activity>
 
 
     </application>

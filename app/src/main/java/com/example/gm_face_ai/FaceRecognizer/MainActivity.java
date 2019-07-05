@@ -111,7 +111,7 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
     private TextView txtName;
     private TextView txtHold;
     public float THRESHOLD1;
-    public Boolean CameraW;
+    public Boolean  CameraW;
     Boolean isOpen = false;
 
     Animation fabOpen, fabClose, rotateForward, rotateBackward;

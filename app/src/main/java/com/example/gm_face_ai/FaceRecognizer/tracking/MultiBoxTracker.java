@@ -25,11 +25,13 @@ import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
 import android.graphics.RectF;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Pair;
 import android.util.TypedValue;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -37,9 +39,11 @@ import java.util.Queue;
 
 import com.example.gm_face_ai.FaceRecognizer.CameraActivity;
 import com.example.gm_face_ai.FaceRecognizer.Classifier.Recognition;
+import com.example.gm_face_ai.FaceRecognizer.MainActivity;
 import com.example.gm_face_ai.FaceRecognizer.env.ImageUtils;
 import com.example.gm_face_ai.FaceRecognizer.env.Logger;
 import com.example.gm_face_ai.FaceRecognizer.env.BorderedText;
+
 /**
  * A tracker wrapping ObjectTracker that also handles non-max suppression and matching existing
  * objects to new detections.
@@ -98,12 +102,14 @@ public class MultiBoxTracker {
     private int sensorOrientation;
     private Context context;
 
-    public MultiBoxTracker(final Context context) {
+    private String[] names = new String[20];
+
+
+    public MultiBoxTracker (final Context context) {
         this.context = context;
         for (final int color : COLORS) {
             availableColors.add(color);
         }
-
         boxPaint.setColor(Color.RED);
         boxPaint.setStyle(Style.STROKE);
         boxPaint.setStrokeWidth(8.0f);
@@ -134,9 +140,9 @@ public class MultiBoxTracker {
 
         for (final Pair<Float, RectF> detection : screenRects) {
             final RectF rect = detection.second;
-            //canvas.drawRect(rect, boxPaint);
+            canvas.drawRect(rect, boxPaint);
             canvas.drawText("" + detection.first, rect.left, rect.top, textPaint);
-            //borderedText.drawText(canvas, rect.centerX(), rect.centerY(), "" + detection.first);
+            borderedText.drawText(canvas, rect.centerX(), rect.centerY(), "" + detection.first);
         }
 
         if (objectTracker == null) {
@@ -152,7 +158,8 @@ public class MultiBoxTracker {
             if (getFrameToCanvasMatrix().mapRect(trackedPos)) {
                 final String labelString = String.format("%.2f", trackedObject.getCurrentCorrelation());
 
-              //  borderedText.drawText(canvas, trackedPos.right, trackedPos.bottom, labelString);
+                borderedText.drawText(canvas, trackedPos.right, trackedPos.bottom, labelString);
+
                 txt.setText(labelString);
             }
         }
@@ -166,7 +173,7 @@ public class MultiBoxTracker {
         logger.i("Processing %d results from %d", results.size(), timestamp);
         processResults(timestamp, results, frame);
     }
-
+    int i=0;
     public synchronized void draw(final Canvas canvas,TextView txt) {
         final boolean rotated = sensorOrientation % 180 == 90;
         final float multiplier =
@@ -196,11 +203,17 @@ public class MultiBoxTracker {
 //                    !TextUtils.isEmpty(recognition.title)
 //                            ? String.format("%s %.2f", recognition.title, recognition.detectionConfidence)
 //                            : String.format("%.2f", recognition.detectionConfidence);
-            final String labelString = recognition.title;
+            String labelString= recognition.title;
+            //labelString += labelString;
+
+            borderedText.drawText(canvas, trackedPos.left + cornerSize, trackedPos.bottom, labelString);
+           // Log.i("Tag :   ",labelString);
+           //oast.makeText(context, labelString, Toast.LENGTH_LONG).show();
+            txt.setText(labelString +"\n"+ labelString);
 
 
-            //borderedText.drawText(canvas, trackedPos.left + cornerSize, trackedPos.bottom, labelString);
-            txt.setText(labelString);
+
+
         }
     }
 
