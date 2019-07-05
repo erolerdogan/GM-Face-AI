@@ -38,7 +38,6 @@ import android.view.KeyEvent;
 import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -73,37 +72,17 @@ public abstract class CameraActivity extends AppCompatActivity
 
     private Runnable postInferenceCallback;
     private Runnable imageConverter;
-
+    public Boolean CameraWay;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         LOGGER.d("onCreate " + this);
         super.onCreate(null);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
         setContentView(R.layout.activity_camera);
-        //<Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
 
-        if (hasPermission()) {
-            setFragment(chooseCameraFront());
-            final int[] press_counter = {0};
-            ImageButton switch_camera = findViewById(R.id.flipButton);
-            switch_camera.setOnClickListener(new View.OnClickListener() {
 
-                @Override
-                public void onClick(View view) {
-                    press_counter[0]++;
-                    if (press_counter[0] % 2 == 0) {
-                        setFragment(chooseCameraFront());
-
-                    } else {
-                        setFragment(chooseCameraBack());
-                    }
-                }
-            });
-        } else {
-            requestPermission();
-        }
     }
 
     protected int[] getRgbBytes() {
@@ -118,6 +97,21 @@ public abstract class CameraActivity extends AppCompatActivity
     protected byte[] getLuminance() {
         return yuvBytes[0];
     }
+    public void SwitchCam(boolean b){
+        if (hasPermission()) {
+            setFragment(chooseCameraFront());
+            if (b) {
+                setFragment(chooseCameraFront());
+
+            } else {
+                setFragment(chooseCameraBack());
+            }
+
+        } else {
+            requestPermission();
+        }
+    }
+
 
     /**
      * Callback for Camera2 API

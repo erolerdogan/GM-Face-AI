@@ -8,21 +8,23 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.example.gm_face_ai.FaceDetection.FaceTrackerActivity;
+import com.example.gm_face_ai.FaceRecognizer.StartActivity;
 import com.example.gm_face_ai.FaceSpotter.FaceActivity;
 import com.google.android.material.snackbar.Snackbar;
 
 public class MainActivity extends AppCompatActivity {
-
+    final boolean[] CameraW2 = {true}; // True is Front Cam , false is Back Cam.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         Snackbar sb;
         ConstraintLayout container = findViewById(R.id.container2);
         sb =  Snackbar.make(container, "Bu Hizmet şuan da geliştiriliyor...", Snackbar.LENGTH_INDEFINITE);
@@ -53,8 +55,7 @@ public class MainActivity extends AppCompatActivity {
         btnFaceRec.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i("TAG: ","Button Clicked");
-                Intent intent = new Intent(getApplicationContext(), com.example.gm_face_ai.FaceRecognizer.MainActivity.class);
+                Intent intent = new Intent(getApplicationContext(), StartActivity.class);
                 startActivity(intent);
 
             }
@@ -64,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         btnLandmark.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sb.setAction("OK", new View.OnClickListener() {
+                sb.setAction("Tamam", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         sb.dismiss();
@@ -74,5 +75,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
     }
 }

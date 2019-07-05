@@ -111,7 +111,7 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
     private TextView txtName;
     private TextView txtHold;
     public float THRESHOLD1;
-
+    public Boolean  CameraW;
     Boolean isOpen = false;
 
     Animation fabOpen, fabClose, rotateForward, rotateBackward;
@@ -125,6 +125,8 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
         FrameLayout container = findViewById(R.id.container);
         initSnackbar = Snackbar.make(container, "Yükleniyor...", Snackbar.LENGTH_INDEFINITE);
         trainSnackbar = Snackbar.make(container, "Makine eğitiliyor...", Snackbar.LENGTH_INDEFINITE);
+        Bundle data=getIntent().getExtras();
+        CameraW = data.getBoolean("CameraWay2");
 
         fab = findViewById(R.id.fab);
         fab1 = findViewById(R.id.fab1_add_person);
@@ -212,6 +214,8 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
         fab1.setOnClickListener(view -> {
             editDialog.show();
         });
+        SwitchCam(CameraW);
+
     }
 
     private void animateFab() {
