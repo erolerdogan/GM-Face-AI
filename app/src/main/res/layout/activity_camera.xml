@@ -63,7 +63,17 @@
         android:layout_marginBottom="288dp"
         android:tint="@android:color/white"
         app:srcCompat="@drawable/ic_border" />
-
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab5_report"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:clickable="false"
+        android:visibility="invisible"
+        android:layout_marginRight="13dp"
+        android:layout_marginBottom="352dp"
+        android:tint="@android:color/white"
+        app:srcCompat="@drawable/ic_border" />
 
     <TextView
         android:id="@+id/txtName"

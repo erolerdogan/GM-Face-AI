@@ -74,14 +74,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnFaceDet"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        app:srcCompat="@drawable/ic_portrait" />
+        app:srcCompat="@drawable/ic_record_voice" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="150dp"
         android:layout_height="30dp"
         android:layout_marginTop="28dp"
-        android:text="@string/face_landmarks"
+        android:text="Voice command"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="@+id/btnFaceDet4"
         app:layout_constraintStart_toStartOf="@+id/btnFaceDet4"

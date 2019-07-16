@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "418183997855",
+    "firebase_url": "https://gm-face-ai.firebaseio.com",
+    "project_id": "gm-face-ai",
+    "storage_bucket": "gm-face-ai.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:418183997855:android:605a93ef6faa3640",
+        "android_client_info": {
+          "package_name": "com.example.gm_face_ai"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "418183997855-3o7puds8ilq7lo5cbikve0fvkr5rrtkd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzCS9NnPmFkcDpsvLEkTTSNVLy8lm4PZk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "418183997855-3o7puds8ilq7lo5cbikve0fvkr5rrtkd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
