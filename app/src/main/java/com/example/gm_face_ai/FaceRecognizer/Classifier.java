@@ -284,27 +284,14 @@ public class Classifier {
         }else if(name == "Bilinemiyor"){
 
         }else{
-            Log.i("TEST//Giriş yaptı  ",name+",   "+CurrentDate);
-            str= name+ ", "+ CurrentDate+"\n";
+            Log.i("TEST//Giriş yaptı  ",name+"  "+CurrentDate);
+            str= name+ " "+ CurrentDate+"\n";
             addToFile(str);
         }
         temp=name;
 
     }
-
-    /*void addFile(String str,Context ctx){
-        try {
-            File file = new File("","test1");
-            FileWriter writer = new FileWriter(file,true);
-            BufferedWriter buff=new BufferedWriter(writer);
-            buff.write(str);
-            buff.close();
-            Log.i("Dosya ", "Kaydedildi ");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }*/
-    File file1=new File("/storage/emulated/0/test1.txt");
+    File file1=new File("/storage/emulated/0/NoProcessData.txt");
     void addToFile(String str){
         try {
 
@@ -323,9 +310,8 @@ public class Classifier {
     UsbDevice usbdevice;
     UsbDeviceConnection usbDeviceConnection;
 
-    void burn(){
-        
-    }
+    void burn(){}
+
 
 
 }

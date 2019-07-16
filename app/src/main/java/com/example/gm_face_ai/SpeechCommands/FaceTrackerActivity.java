@@ -35,8 +35,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import com.abdallahalaraby.blink.FileUtils;
-import com.abdallahalaraby.blink.Screenshot;
 import com.example.gm_face_ai.FaceRecognizer.tracking.ObjectTracker;
 import com.example.gm_face_ai.MainActivity;
 import com.example.gm_face_ai.R;
@@ -404,9 +402,9 @@ public final class FaceTrackerActivity extends AppCompatActivity {
                                     case 0:
                                         // yes event
                                         Toast.makeText(getApplicationContext(),"You Say Yes",Toast.LENGTH_LONG).show();
-                                        Bitmap bitmap = Screenshot.getInstance().takeScreenshotForScreen(FaceTrackerActivity.this); // Take Screenshot for Activity
+/*                                        Bitmap bitmap = Screenshot.getInstance().takeScreenshotForScreen(FaceTrackerActivity.this); // Take Screenshot for Activity
                                         String path = Environment.getExternalStorageDirectory().toString() + "/test.jpg";
-                                        FileUtils.getInstance().storeBitmap(bitmap, path);
+                                        FileUtils.getInstance().storeBitmap(bitmap, path);*/
                                         break;
                                     case 1:
                                         //no event

@@ -30,6 +30,7 @@ import android.media.ImageReader.OnImageAvailableListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.util.Log;
 import android.util.Size;
 import android.util.TypedValue;
 import android.view.View;
@@ -51,6 +52,8 @@ import com.example.gm_face_ai.FaceRecognizer.tracking.MultiBoxTracker;
 import com.example.gm_face_ai.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -112,7 +115,7 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
     private boolean initialized = false;
     private boolean training = false;
 
-    private ArrayList<ArrayList<String>> List =  new ArrayList<>();
+    private ArrayList<ArrayList<String>> List = new ArrayList<>();
 
     private FloatingActionButton fab;
     private FloatingActionButton fab1;
@@ -124,10 +127,18 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
     private TextView txtHold;
     public float THRESHOLD1;
     public Boolean CameraW;
+    public File file = new File("/storage/emulated/0/NoProcessData.txt");
+    public File report = new File("/storage/emulated/0/ProcessData.txt");
     Boolean isOpen = false;
+//DATABASE
+    public FirebaseDatabase database;
+    public DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Datas");
 
+
+//
     Animation fabOpen, fabClose, rotateForward, rotateBackward;
     private String TAG = "TAG";
+
 /*    FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference reference = database.getReference("Persons");*/
 
@@ -148,7 +159,7 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
         fab5 = findViewById(R.id.fab5_report);
 
         txtName = findViewById(R.id.txtName);
-        THRESHOLD1 = 0.51f;
+        THRESHOLD1 = 0.30f;
 
         txtHold = findViewById(R.id.txtThreshold);
         txtHold.setText("Güncel eşik değer : " + THRESHOLD1);
@@ -188,17 +199,17 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
                 })
                 .create();
         AssetManager mgr = getAssets();
-        /*fab3.setOnClickListener(new View.OnClickListener() {
+        fab3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FileUtils.delfiles(mgr, FileUtils.DATA_FILE);
-                FileUtils.delfiles(mgr, FileUtils.MODEL_FILE);
-                FileUtils.delfiles(mgr, FileUtils.LABEL_FILE);
-                classifier.delClasses();
+                file.delete();
+                report.delete();
+                Log.i("Dosya ","Safe Deleted");
+                Toast.makeText(getApplicationContext(),"Reports deleted ..",Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getApplicationContext(), com.example.gm_face_ai.MainActivity.class);
                 startActivity(intent);
             }
-        });*/
+        });
 
 
         fab4.setOnClickListener(new View.OnClickListener() {
@@ -239,28 +250,101 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
         SwitchCam(CameraW);
 
     }
+    // List.get(x) -> x numaralı kişi Datasını getirir.
+    // List.get(x).get(x) -> x numaralı kişinin x numaralı bilgisini getirir
+    // List.get() -> 0 = 1.kişi , 1= 2.kişi ....
+    //List.get().get() -> 0 = isim , 1 = soyisim , 2 = haftanın günü ,3 = ay ,4 = gün ,5 = saat , 6= zaman dilimi, 7= Yıl
+    //
 
     private void readData() {
+        DataModel dm = new DataModel();
         ArrayList<String> DataList = new ArrayList<>();
-        String data, nameData, dateData;
+        String data, nameData, dateData, result;
         String[] datas;
         Date time;
-        File file = new File("/storage/emulated/0/test1.txt");
+
+        int x = 0;
         try {
             Scanner read = new Scanner(file);
-            while (read.hasNextLine()) {
+            while (read.hasNext()) {
                 data = read.nextLine();
                 datas = data.split(" ");
-                for(int i=0;i<datas.length;i++){
-                    DataList.add(datas[i]);
+                for (int i = 0; i < datas.length; i++) {
+                    DataList.add(i, datas[i]);
                 }
-                List.add(DataList);
-                Toast.makeText(getApplicationContext(),List.get(0).get(0)+List.get(0).get(1),Toast.LENGTH_LONG).show();
+                dateData = DataList.get(4) + DataList.get(3) + DataList.get(7);
+                dm.setName(DataList.get(0) + " " + DataList.get(1));
+                dm.setTime(DataList.get(5));
+                dm.setDate(dateData);
+                reference.push().setValue(dm);
+
+                result = DataList.get(0) + " " + DataList.get(1) + "\nSaat : " + DataList.get(5) + "\nTarih : " + dateData + "\n\n";
+
+                FileWriter wrtr = new FileWriter(report, true);
+                BufferedWriter bw = new BufferedWriter(wrtr);
+                bw.write(result);
+                Log.i("TEST// Dosya ", "Dosyaya kaydedildi " + result);
+                bw.close();
+                //Toast.makeText(getApplicationContext(), List.get(0).get(0) + List.get(0).get(1), Toast.LENGTH_LONG).show();
             }
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        // MakeReport();
+        List.clear();
     }
+
+
+//    void MakeReport() {
+//        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+//        SimpleDateFormat format1 = new SimpleDateFormat("dd-MM-yyyy");
+//        String firstName, secondName, DateTemp, Clock;
+//        String result = "No Data";
+//        Date clock;
+//        Date date;
+//        Date time;
+//        for (int x = 0; x < List.size(); x++) {
+//            firstName = List.get(x).get(0);
+//            secondName = List.get(x).get(1);
+//            DateTemp = List.get(x).get(4) + List.get(x).get(3) + List.get(x).get(7);
+//            try {
+//                date = format1.parse(DateTemp);
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
+//            try {
+//                clock = format.parse(List.get(x).get(0));
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
+//            Clock = List.get(x).get(5);
+//            result = firstName + " " + secondName + "\nGiriş saati : " + Clock + "\nTarih : " + DateTemp + "\n";
+//
+//            FileWriter wrtr = null;
+//            try {
+//                wrtr = new FileWriter(report, true);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            BufferedWriter bw = new BufferedWriter(wrtr);
+//            try {
+//                bw.write(result);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            try {
+//                bw.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            Log.i("TEST/2/ Dosya ", "Dosyaya kaydedildi " + result);
+//        }
+//        List.clear();
+//
+//    }
 
     private void animateFab() {
         if (isOpen) {

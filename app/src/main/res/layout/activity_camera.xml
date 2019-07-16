@@ -73,7 +73,7 @@
         android:layout_marginRight="13dp"
         android:layout_marginBottom="352dp"
         android:tint="@android:color/white"
-        app:srcCompat="@drawable/ic_border" />
+        app:srcCompat="@drawable/ic_insert_drive" />
 
     <TextView
         android:id="@+id/txtName"
