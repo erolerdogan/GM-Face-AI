@@ -30,10 +30,12 @@ import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
 
 import java.io.BufferedWriter;
 import java.io.FileDescriptor;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.FloatBuffer;
@@ -42,6 +44,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -51,8 +54,12 @@ import com.example.gm_face_ai.FaceRecognizer.wrapper.MTCNN;
 import com.example.gm_face_ai.FaceRecognizer.wrapper.FaceNet;
 import java.io.FileWriter;
 import java.io.File;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 /**
  * Generic interface for interacting with different recognition engines.
@@ -287,6 +294,7 @@ public class Classifier {
             Log.i("TEST//Giriş yaptı  ",name+"  "+CurrentDate);
             str= name+ " "+ CurrentDate+"\n";
             addToFile(str);
+            readData();
         }
         temp=name;
 
@@ -311,7 +319,77 @@ public class Classifier {
     UsbDeviceConnection usbDeviceConnection;
 
     void burn(){}
+    public File file = new File("/storage/emulated/0/NoProcessData.txt");
+    public File report = new File("/storage/emulated/0/ProcessData.txt");
+    Boolean isOpen = false;
+    //DATABASE
+    public FirebaseDatabase database;
+    public DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Datas");
+    private ArrayList<ArrayList<String>> List = new ArrayList<>();
 
 
+    public void readData() {
+        DataModel dm = new DataModel();
+        ArrayList<String> DataList = new ArrayList<>();
+        String data, nameData, dateData, result;
+        String[] datas;
+        Date time;
 
+        int x = 0;
+        try {
+            Scanner read = new Scanner(file);
+            while (read.hasNext()) {
+                data = read.nextLine();
+                datas = data.split(" ");
+                for (int i = 0; i < datas.length; i++) {
+                    DataList.add(i, datas[i]);
+                }
+                dateData = DataList.get(4) + DataList.get(3) + DataList.get(7);
+                kontrol(dm.getName());
+                dm.setName(DataList.get(0) + " " + DataList.get(1));
+                dm.setTime(DataList.get(5));
+                dm.setDate(dateData);
+                reference.push().setValue(dm);
+
+                result = DataList.get(0) + " " + DataList.get(1) + "\nSaat : " + DataList.get(5) + "\nTarih : " + dateData + "\n\n";
+
+                FileWriter wrtr = new FileWriter(report, true);
+                BufferedWriter bw = new BufferedWriter(wrtr);
+                bw.write(result);
+                Log.i("TEST// Dosya ", "Dosyaya kaydedildi " + result);
+                bw.close();
+                //Toast.makeText(getApplicationContext(), List.get(0).get(0) + List.get(0).get(1), Toast.LENGTH_LONG).show();
+            }
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // MakeReport();
+        List.clear();
+    }
+    void kontrol(String name){
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot ds : dataSnapshot.getChildren()){
+                    if(name == ds.child("name").getValue()){
+                        Log.i("Database ",name+" Kayıtlı");
+                        Log.i("Database ",ds.getRef().toString());
+                        Log.i("Database2 ",ds.getValue().toString());
+                        ds.getRef().removeValue();
+                    }
+                    else{
+                        Log.i("Database ",name+" Kayıtlı Değil");
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 }

@@ -60,8 +60,16 @@ public class MainActivity extends AppCompatActivity {
         btnLandmark.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), com.example.gm_face_ai.SpeechCommands.FaceTrackerActivity.class);
-                startActivity(intent);
+
+                sb.setAction("Tamam", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        sb.dismiss();
+                    }
+                });
+                sb.show();
+/*                Intent intent = new Intent(getApplicationContext(), com.example.gm_face_ai.SpeechCommands.FaceTrackerActivity.class);
+                startActivity(intent);*/
 
             }
         });
