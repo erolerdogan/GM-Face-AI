@@ -16,26 +16,44 @@ limitations under the License.
 package com.example.gm_face_ai.FaceRecognizer;
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.hardware.usb.UsbDevice;
+import android.hardware.usb.UsbDeviceConnection;
+import android.hardware.usb.UsbManager;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
+import android.util.Log;
 
 import androidx.core.util.Pair;
 
+import java.io.BufferedWriter;
 import java.io.FileDescriptor;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import com.example.gm_face_ai.FaceRecognizer.env.FileUtils;
 import com.example.gm_face_ai.FaceRecognizer.wrapper.LibSVM;
 import com.example.gm_face_ai.FaceRecognizer.wrapper.MTCNN;
 import com.example.gm_face_ai.FaceRecognizer.wrapper.FaceNet;
+import java.io.FileWriter;
+import java.io.File;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 /**
  * Generic interface for interacting with different recognition engines.
  */
@@ -92,7 +110,6 @@ public class Classifier {
         void setLocation(RectF location) {
             this.location = location;
         }
-
         @Override
         public String toString() {
             String resultString = "";
@@ -126,6 +143,9 @@ public class Classifier {
     private List<String> classNames;
 
     private Classifier() {}
+    //////////// F  ///////////////////////////
+
+    ///////////////////////////////////////
 
     static Classifier getInstance (AssetManager assetManager,
                                    int inputHeight,
@@ -160,7 +180,7 @@ public class Classifier {
         getClassNames();
     }
 
-    List<Recognition> recognizeImage(Bitmap bitmap, Matrix matrix) {
+    List<Recognition> recognizeImage(Bitmap bitmap, Matrix matrix,Context context) {
         synchronized (this) {
             Pair faces[] = mtcnn.detect(bitmap);
 
@@ -185,6 +205,7 @@ public class Classifier {
                 else
                     name = "Bilinemiyor";
 
+                sendLog(name,context);
                 Recognition result =
                         new Recognition("" + pair.first, name, prob, rectF);
                 mappedRecognitions.add(result);
@@ -251,4 +272,46 @@ public class Classifier {
         mtcnn.close();
         faceNet.close();
     }
+
+
+    String temp="";
+    void sendLog(String name, Context ctx){
+        String str="";
+        Date CurrentDate= Calendar.getInstance().getTime();
+
+        if(name == temp ){
+
+        }else if(name == "Bilinemiyor"){
+
+        }else{
+            Log.i("TEST//Giriş yaptı  ",name+"  "+CurrentDate);
+            str= name+ " "+ CurrentDate+"\n";
+            addToFile(str);
+        }
+        temp=name;
+
+    }
+    File file1=new File("/storage/emulated/0/NoProcessData.txt");
+    void addToFile(String str){
+        try {
+
+            FileWriter wrtr = new FileWriter(file1,true);
+            BufferedWriter bw = new BufferedWriter(wrtr);
+            bw.write(str);
+            bw.close();
+            Log.i("TEST// Dosya ","Dosyaya kaydedildi "+ str);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    UsbManager usbmanager;
+    UsbDevice usbdevice;
+    UsbDeviceConnection usbDeviceConnection;
+
+    void burn(){}
+
+
+
 }

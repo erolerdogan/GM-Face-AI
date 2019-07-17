@@ -30,6 +30,7 @@ import android.media.ImageReader.OnImageAvailableListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.util.Log;
 import android.util.Size;
 import android.util.TypedValue;
 import android.view.View;
@@ -39,6 +40,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -50,12 +52,22 @@ import com.example.gm_face_ai.FaceRecognizer.tracking.MultiBoxTracker;
 import com.example.gm_face_ai.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
 import java.util.Vector;
+
+//import java.io.BufferedWriter;
 
 
 /**
@@ -103,29 +115,40 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
     private boolean initialized = false;
     private boolean training = false;
 
+    private ArrayList<ArrayList<String>> List = new ArrayList<>();
+
     private FloatingActionButton fab;
     private FloatingActionButton fab1;
     private FloatingActionButton fab2;
     private FloatingActionButton fab3;
     private FloatingActionButton fab4;
+    private FloatingActionButton fab5;
     private TextView txtName;
     private TextView txtHold;
     public float THRESHOLD1;
-    public Boolean  CameraW;
+    public Boolean CameraW;
+    public File file = new File("/storage/emulated/0/NoProcessData.txt");
+    public File report = new File("/storage/emulated/0/ProcessData.txt");
     Boolean isOpen = false;
+//DATABASE
+    public FirebaseDatabase database;
+    public DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Datas");
 
+
+//
     Animation fabOpen, fabClose, rotateForward, rotateBackward;
     private String TAG = "TAG";
 
+/*    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference reference = database.getReference("Persons");*/
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         FrameLayout container = findViewById(R.id.container);
         initSnackbar = Snackbar.make(container, "Yükleniyor...", Snackbar.LENGTH_INDEFINITE);
         trainSnackbar = Snackbar.make(container, "Makine eğitiliyor...", Snackbar.LENGTH_INDEFINITE);
-        Bundle data=getIntent().getExtras();
+        Bundle data = getIntent().getExtras();
         CameraW = data.getBoolean("CameraWay2");
 
         fab = findViewById(R.id.fab);
@@ -133,8 +156,10 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
         fab2 = findViewById(R.id.fab2_contacts);
         fab3 = findViewById(R.id.fab3_del);
         fab4 = findViewById(R.id.fab4_threshold);
+        fab5 = findViewById(R.id.fab5_report);
+
         txtName = findViewById(R.id.txtName);
-        THRESHOLD1 = 0.51f;
+        THRESHOLD1 = 0.30f;
 
         txtHold = findViewById(R.id.txtThreshold);
         txtHold.setText("Güncel eşik değer : " + THRESHOLD1);
@@ -177,10 +202,10 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
         fab3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FileUtils.delfiles(mgr, FileUtils.DATA_FILE);
-                FileUtils.delfiles(mgr, FileUtils.MODEL_FILE);
-                FileUtils.delfiles(mgr, FileUtils.LABEL_FILE);
-                classifier.delClasses();
+                file.delete();
+                report.delete();
+                Log.i("Dosya ","Safe Deleted");
+                Toast.makeText(getApplicationContext(),"Reports deleted ..",Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getApplicationContext(), com.example.gm_face_ai.MainActivity.class);
                 startActivity(intent);
             }
@@ -214,9 +239,112 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
         fab1.setOnClickListener(view -> {
             editDialog.show();
         });
+        fab5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                readData();
+
+            }
+        });
+
         SwitchCam(CameraW);
 
     }
+    // List.get(x) -> x numaralı kişi Datasını getirir.
+    // List.get(x).get(x) -> x numaralı kişinin x numaralı bilgisini getirir
+    // List.get() -> 0 = 1.kişi , 1= 2.kişi ....
+    //List.get().get() -> 0 = isim , 1 = soyisim , 2 = haftanın günü ,3 = ay ,4 = gün ,5 = saat , 6= zaman dilimi, 7= Yıl
+    //
+
+    private void readData() {
+        DataModel dm = new DataModel();
+        ArrayList<String> DataList = new ArrayList<>();
+        String data, nameData, dateData, result;
+        String[] datas;
+        Date time;
+
+        int x = 0;
+        try {
+            Scanner read = new Scanner(file);
+            while (read.hasNext()) {
+                data = read.nextLine();
+                datas = data.split(" ");
+                for (int i = 0; i < datas.length; i++) {
+                    DataList.add(i, datas[i]);
+                }
+                dateData = DataList.get(4) + DataList.get(3) + DataList.get(7);
+                dm.setName(DataList.get(0) + " " + DataList.get(1));
+                dm.setTime(DataList.get(5));
+                dm.setDate(dateData);
+                reference.push().setValue(dm);
+
+                result = DataList.get(0) + " " + DataList.get(1) + "\nSaat : " + DataList.get(5) + "\nTarih : " + dateData + "\n\n";
+
+                FileWriter wrtr = new FileWriter(report, true);
+                BufferedWriter bw = new BufferedWriter(wrtr);
+                bw.write(result);
+                Log.i("TEST// Dosya ", "Dosyaya kaydedildi " + result);
+                bw.close();
+                //Toast.makeText(getApplicationContext(), List.get(0).get(0) + List.get(0).get(1), Toast.LENGTH_LONG).show();
+            }
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // MakeReport();
+        List.clear();
+    }
+
+
+//    void MakeReport() {
+//        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+//        SimpleDateFormat format1 = new SimpleDateFormat("dd-MM-yyyy");
+//        String firstName, secondName, DateTemp, Clock;
+//        String result = "No Data";
+//        Date clock;
+//        Date date;
+//        Date time;
+//        for (int x = 0; x < List.size(); x++) {
+//            firstName = List.get(x).get(0);
+//            secondName = List.get(x).get(1);
+//            DateTemp = List.get(x).get(4) + List.get(x).get(3) + List.get(x).get(7);
+//            try {
+//                date = format1.parse(DateTemp);
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
+//            try {
+//                clock = format.parse(List.get(x).get(0));
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
+//            Clock = List.get(x).get(5);
+//            result = firstName + " " + secondName + "\nGiriş saati : " + Clock + "\nTarih : " + DateTemp + "\n";
+//
+//            FileWriter wrtr = null;
+//            try {
+//                wrtr = new FileWriter(report, true);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            BufferedWriter bw = new BufferedWriter(wrtr);
+//            try {
+//                bw.write(result);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            try {
+//                bw.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            Log.i("TEST/2/ Dosya ", "Dosyaya kaydedildi " + result);
+//        }
+//        List.clear();
+//
+//    }
 
     private void animateFab() {
         if (isOpen) {
@@ -225,11 +353,13 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
             fab2.startAnimation(fabClose);
             fab3.startAnimation(fabClose);
             fab4.startAnimation(fabClose);
+            fab5.startAnimation(fabClose);
 
             fab1.setClickable(false);
             fab2.setClickable(false);
             fab3.setClickable(false);
             fab4.setClickable(false);
+            fab5.setClickable(false);
 
             isOpen = false;
         } else {
@@ -238,11 +368,13 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
             fab2.startAnimation(fabOpen);
             fab3.startAnimation(fabOpen);
             fab4.startAnimation(fabOpen);
+            fab5.startAnimation(fabOpen);
 
             fab1.setClickable(true);
             fab2.setClickable(true);
             fab3.setClickable(true);
             fab4.setClickable(true);
+            fab5.setClickable(true);
             isOpen = true;
         }
     }
@@ -399,7 +531,7 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
 
                     cropCopyBitmap = Bitmap.createBitmap(croppedBitmap);
                     List<Classifier.Recognition> mappedRecognitions =
-                            classifier.recognizeImage(croppedBitmap, cropToFrameTransform);
+                            classifier.recognizeImage(croppedBitmap, cropToFrameTransform, this);
 
                     lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
                     tracker.trackResults(mappedRecognitions, luminanceCopy, currTimestamp);
@@ -469,6 +601,18 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
         intent.setType("image/*");
 
         startActivityForResult(intent, requestCode);
+    }
+
+    void files(String str) {
+        try {
+            File file1 = new File("/storage/emulated/0/test.txt");
+            FileWriter wrtr = new FileWriter(file1);
+            BufferedWriter bw = new BufferedWriter(wrtr);
+            bw.write(str);
+            bw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
 

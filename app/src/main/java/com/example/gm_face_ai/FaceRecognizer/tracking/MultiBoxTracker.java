@@ -206,10 +206,10 @@ public class MultiBoxTracker {
             String labelString= recognition.title;
             //labelString += labelString;
 
-            borderedText.drawText(canvas, trackedPos.left + cornerSize, trackedPos.bottom, labelString);
+            //borderedText.drawText(canvas, trackedPos.left + cornerSize, trackedPos.bottom, labelString);
            // Log.i("Tag :   ",labelString);
            //oast.makeText(context, labelString, Toast.LENGTH_LONG).show();
-            txt.setText(labelString +"\n"+ labelString);
+            txt.setText(labelString);
 
 
 
