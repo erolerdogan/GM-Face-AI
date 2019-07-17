@@ -42,6 +42,7 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
 import com.example.gm_face_ai.FaceRecognizer.env.BorderedText;
@@ -52,8 +53,11 @@ import com.example.gm_face_ai.FaceRecognizer.tracking.MultiBoxTracker;
 import com.example.gm_face_ai.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -204,6 +208,7 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
             public void onClick(View view) {
                 file.delete();
                 report.delete();
+                reference.removeValue();
                 Log.i("Dosya ","Safe Deleted");
                 Toast.makeText(getApplicationContext(),"Reports deleted ..",Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getApplicationContext(), com.example.gm_face_ai.MainActivity.class);
@@ -242,7 +247,7 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
         fab5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                readData();
+                //readData();
 
             }
         });
@@ -256,46 +261,6 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
     //List.get().get() -> 0 = isim , 1 = soyisim , 2 = haftanın günü ,3 = ay ,4 = gün ,5 = saat , 6= zaman dilimi, 7= Yıl
     //
 
-    private void readData() {
-        DataModel dm = new DataModel();
-        ArrayList<String> DataList = new ArrayList<>();
-        String data, nameData, dateData, result;
-        String[] datas;
-        Date time;
-
-        int x = 0;
-        try {
-            Scanner read = new Scanner(file);
-            while (read.hasNext()) {
-                data = read.nextLine();
-                datas = data.split(" ");
-                for (int i = 0; i < datas.length; i++) {
-                    DataList.add(i, datas[i]);
-                }
-                dateData = DataList.get(4) + DataList.get(3) + DataList.get(7);
-                dm.setName(DataList.get(0) + " " + DataList.get(1));
-                dm.setTime(DataList.get(5));
-                dm.setDate(dateData);
-                reference.push().setValue(dm);
-
-                result = DataList.get(0) + " " + DataList.get(1) + "\nSaat : " + DataList.get(5) + "\nTarih : " + dateData + "\n\n";
-
-                FileWriter wrtr = new FileWriter(report, true);
-                BufferedWriter bw = new BufferedWriter(wrtr);
-                bw.write(result);
-                Log.i("TEST// Dosya ", "Dosyaya kaydedildi " + result);
-                bw.close();
-                //Toast.makeText(getApplicationContext(), List.get(0).get(0) + List.get(0).get(1), Toast.LENGTH_LONG).show();
-            }
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        // MakeReport();
-        List.clear();
-    }
 
 
 //    void MakeReport() {
