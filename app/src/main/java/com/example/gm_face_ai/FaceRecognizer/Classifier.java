@@ -33,10 +33,21 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
 
+import com.example.gm_face_ai.FaceRecognizer.env.FileUtils;
+import com.example.gm_face_ai.FaceRecognizer.wrapper.FaceNet;
+import com.example.gm_face_ai.FaceRecognizer.wrapper.LibSVM;
+import com.example.gm_face_ai.FaceRecognizer.wrapper.MTCNN;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
@@ -45,27 +56,12 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import com.example.gm_face_ai.FaceRecognizer.env.FileUtils;
-import com.example.gm_face_ai.FaceRecognizer.wrapper.LibSVM;
-import com.example.gm_face_ai.FaceRecognizer.wrapper.MTCNN;
-import com.example.gm_face_ai.FaceRecognizer.wrapper.FaceNet;
-import java.io.FileWriter;
-import java.io.File;
-
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 /**
  * Generic interface for interacting with different recognition engines.
  */
 public class Classifier {
-    public   Float THRESHOLD = 0.35f;
+    public Float THRESHOLD = 0.35f;
 
     /**
      * An immutable result returned by a Classifier describing what was recognized.
@@ -87,7 +83,9 @@ public class Classifier {
          */
         private final Float confidence;
 
-        /** Optional location within the source image for the location of the recognized object. */
+        /**
+         * Optional location within the source image for the location of the recognized object.
+         */
         private RectF location;
 
         Recognition(
@@ -117,6 +115,7 @@ public class Classifier {
         void setLocation(RectF location) {
             this.location = location;
         }
+
         @Override
         public String toString() {
             String resultString = "";
@@ -149,14 +148,15 @@ public class Classifier {
 
     private List<String> classNames;
 
-    private Classifier() {}
+    private Classifier() {
+    }
     //////////// F  ///////////////////////////
 
     ///////////////////////////////////////
 
-    static Classifier getInstance (AssetManager assetManager,
-                                   int inputHeight,
-                                   int inputWidth) throws Exception {
+    static Classifier getInstance(AssetManager assetManager,
+                                  int inputHeight,
+                                  int inputWidth) throws Exception {
         if (classifier != null) return classifier;
 
         classifier = new Classifier();
@@ -182,12 +182,14 @@ public class Classifier {
         return cs;
     }
 
-    public void delClasses(){
+    public void delClasses() {
         classNames.clear();
         getClassNames();
     }
 
-    List<Recognition> recognizeImage(Bitmap bitmap, Matrix matrix,Context context) {
+    boolean test = false;
+
+    List<Recognition> recognizeImage(Bitmap bitmap, Matrix matrix, Context context) {
         synchronized (this) {
             Pair faces[] = mtcnn.detect(bitmap);
 
@@ -206,13 +208,18 @@ public class Classifier {
                 Float prob = pair.second;
 
                 String name;
-                if (prob > THRESHOLD)
+                if (prob > THRESHOLD) {
 
                     name = classNames.get(pair.first);
-                else
+                    test = true;
+
+                } else {
+                    test = false;
                     name = "Bilinemiyor";
 
-                sendLog(name,context);
+                }
+                sendLog(name, context);
+
                 Recognition result =
                         new Recognition("" + pair.first, name, prob, rectF);
                 mappedRecognitions.add(result);
@@ -220,6 +227,10 @@ public class Classifier {
             return mappedRecognitions;
         }
 
+    }
+
+    public boolean sendTest() {
+        return test;
     }
 
     void updateData(int label, ContentResolver contentResolver, ArrayList<Uri> uris) throws Exception {
@@ -268,7 +279,7 @@ public class Classifier {
         return bitmap;
     }
 
-    void enableStatLogging(final boolean debug){
+    void enableStatLogging(final boolean debug) {
     }
 
     String getStatString() {
@@ -281,33 +292,36 @@ public class Classifier {
     }
 
 
-    String temp="";
-    void sendLog(String name, Context ctx){
-        String str="";
-        Date CurrentDate= Calendar.getInstance().getTime();
+    String temp = "";
 
-        if(name == temp ){
+    void sendLog(String name, Context ctx) {
+        String str = "";
+        Date CurrentDate = Calendar.getInstance().getTime();
 
-        }else if(name == "Bilinemiyor"){
+        if (name == temp) {
 
-        }else{
-            Log.i("TEST//Giriş yaptı  ",name+"  "+CurrentDate);
-            str= name+ " "+ CurrentDate+"\n";
+        } else if (name == "Bilinemiyor") {
+
+        } else {
+            Log.i("TEST//Giriş yaptı  ", name + "  " + CurrentDate);
+            str = name + " " + CurrentDate + "\n";
             addToFile(str);
-            readData();
+            //readData();
         }
-        temp=name;
+        temp = name;
 
     }
-    File file1=new File("/storage/emulated/0/NoProcessData.txt");
-    void addToFile(String str){
+
+    File file1 = new File("/storage/emulated/0/NoProcessData.txt");
+
+    void addToFile(String str) {
         try {
 
-            FileWriter wrtr = new FileWriter(file1,true);
+            FileWriter wrtr = new FileWriter(file1, true);
             BufferedWriter bw = new BufferedWriter(wrtr);
             bw.write(str);
             bw.close();
-            Log.i("TEST// Dosya ","Dosyaya kaydedildi "+ str);
+            Log.i("TEST// Dosya ", "Dosyaya kaydedildi " + str);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -318,7 +332,9 @@ public class Classifier {
     UsbDevice usbdevice;
     UsbDeviceConnection usbDeviceConnection;
 
-    void burn(){}
+    void burn() {
+    }
+
     public File file = new File("/storage/emulated/0/NoProcessData.txt");
     public File report = new File("/storage/emulated/0/ProcessData.txt");
     Boolean isOpen = false;
@@ -369,19 +385,19 @@ public class Classifier {
         // MakeReport();
         List.clear();
     }
-    void kontrol(String name){
+
+    void kontrol(String name) {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot ds : dataSnapshot.getChildren()){
-                    if(name == ds.child("name").getValue()){
-                        Log.i("Database ",name+" Kayıtlı");
-                        Log.i("Database ",ds.getRef().toString());
-                        Log.i("Database2 ",ds.getValue().toString());
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    if (name == ds.child("name").getValue()) {
+                        Log.i("Database ", name + " Kayıtlı");
+                        Log.i("Database ", ds.getRef().toString());
+                        Log.i("Database2 ", ds.getValue().toString());
                         ds.getRef().removeValue();
-                    }
-                    else{
-                        Log.i("Database ",name+" Kayıtlı Değil");
+                    } else {
+                        Log.i("Database ", name + " Kayıtlı Değil");
                     }
                 }
             }
@@ -392,4 +408,6 @@ public class Classifier {
             }
         });
     }
+
+
 }
