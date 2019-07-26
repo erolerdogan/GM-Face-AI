@@ -174,7 +174,7 @@ public class MultiBoxTracker {
         processResults(timestamp, results, frame);
     }
     int i=0;
-    public synchronized void draw(final Canvas canvas,TextView txt) {
+    public synchronized void draw(final Canvas canvas,TextView txt,boolean cam) {
         final boolean rotated = sensorOrientation % 180 == 90;
         final float multiplier =
                 Math.min(canvas.getHeight() / (float) (rotated ? frameWidth : frameHeight),
@@ -197,7 +197,7 @@ public class MultiBoxTracker {
             boxPaint.setColor(recognition.color);
 
             final float cornerSize = Math.min(trackedPos.width(), trackedPos.height()) / 8.0f;
-            //canvas.drawRoundRect(trackedPos, cornerSize, cornerSize, boxPaint);
+
 
 //            final String labelString =
 //                    !TextUtils.isEmpty(recognition.title)
@@ -206,8 +206,14 @@ public class MultiBoxTracker {
             String labelString= recognition.title;
             //labelString += labelString;
 
-            //borderedText.drawText(canvas, trackedPos.left + cornerSize, trackedPos.bottom, labelString);
-           // Log.i("Tag :   ",labelString);
+
+            if(!cam){
+                canvas.drawRoundRect(trackedPos, cornerSize, cornerSize, boxPaint);
+                borderedText.drawText(canvas, trackedPos.left + cornerSize, trackedPos.bottom, labelString);
+            }
+
+
+            // Log.i("Tag :   ",labelString);
            //oast.makeText(context, labelString, Toast.LENGTH_LONG).show();
             txt.setText(labelString);
 

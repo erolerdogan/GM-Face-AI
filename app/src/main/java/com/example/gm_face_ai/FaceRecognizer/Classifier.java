@@ -61,7 +61,7 @@ import java.util.Scanner;
  * Generic interface for interacting with different recognition engines.
  */
 public class Classifier {
-    public Float THRESHOLD = 0.35f;
+    public Float THRESHOLD = 0.31f;
 
     /**
      * An immutable result returned by a Classifier describing what was recognized.
@@ -248,7 +248,7 @@ public class Classifier {
                     Float prob = (Float) face.second;
                     if (prob > max) {
                         max = prob;
-
+                        test = false;
                         RectF rectF = (RectF) face.first;
                         rectF.round(rect);
                     }
