@@ -23,6 +23,6 @@
     <string name="menu_navigation">Navigation</string>
     <string name="development_info">GENERAL MOBİLE AR-GE MERKEZİNDE GM Çalışanları Tarafından Oluşturuldu. \nDaha Fazla Bilgi için : https://github.com/general-mobile </string>
     <string name="todo">TODO</string>
-    <string name="use_front_cam">*if you want single face recognation please use front camera</string>
-    <string name="use_rear_cam">**if you want multi face recgonation please use rear camera</string>
+    <string name="use_front_cam">*if you want single face recognation \n please use front camera</string>
+    <string name="use_rear_cam">**if you want multi face recgonation \n please use rear camera</string>
 </resources>
