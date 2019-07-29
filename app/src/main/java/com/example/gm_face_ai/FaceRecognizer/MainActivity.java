@@ -16,6 +16,9 @@
 
 package com.example.gm_face_ai.FaceRecognizer;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.ClipData;
 import android.content.Intent;
 import android.content.res.AssetManager;
@@ -29,6 +32,7 @@ import android.graphics.Typeface;
 import android.media.ImageReader.OnImageAvailableListener;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
 import android.util.Size;
@@ -36,13 +40,13 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
 import com.example.gm_face_ai.FaceRecognizer.env.BorderedText;
@@ -53,22 +57,18 @@ import com.example.gm_face_ai.FaceRecognizer.tracking.MultiBoxTracker;
 import com.example.gm_face_ai.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
-import java.util.Scanner;
+import java.util.Set;
+import java.util.UUID;
 import java.util.Vector;
 
 //import java.io.BufferedWriter;
@@ -127,6 +127,7 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
     private FloatingActionButton fab3;
     private FloatingActionButton fab4;
     private FloatingActionButton fab5;
+    private FloatingActionButton fab6;
     private TextView txtName;
     private TextView txtHold;
     public float THRESHOLD1;
@@ -134,12 +135,12 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
     public File file = new File("/storage/emulated/0/NoProcessData.txt");
     public File report = new File("/storage/emulated/0/ProcessData.txt");
     Boolean isOpen = false;
-//DATABASE
+    //DATABASE
     public FirebaseDatabase database;
     public DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Datas");
 
 
-//
+    //
     Animation fabOpen, fabClose, rotateForward, rotateBackward;
     private String TAG = "TAG";
 
@@ -161,7 +162,7 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
         fab3 = findViewById(R.id.fab3_del);
         fab4 = findViewById(R.id.fab4_threshold);
         fab5 = findViewById(R.id.fab5_report);
-
+        fab6 = findViewById(R.id.fab6_BT);
         txtName = findViewById(R.id.txtName);
         THRESHOLD1 = 0.30f;
 
@@ -177,9 +178,8 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
         View dialogNum = getLayoutInflater().inflate(R.layout.number_picker_layout, null);
         NumberPicker picker1 = (NumberPicker) dialogNum.findViewById(R.id.number_picker);
         picker1.setMaxValue(80);
-        picker1.setMinValue(30);
-        picker1.setValue((int) THRESHOLD1 * 100);
-        int[] pickerValues = new int[50];
+        picker1.setMinValue(20);
+        picker1.setValue((int) 30);
         AlertDialog editDialogNum = new AlertDialog.Builder(MainActivity.this)
                 .setTitle("Eşik değer")
                 .setView(dialogNum)
@@ -209,8 +209,8 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
                 file.delete();
                 report.delete();
                 reference.removeValue();
-                Log.i("Dosya ","Safe Deleted");
-                Toast.makeText(getApplicationContext(),"Reports deleted ..",Toast.LENGTH_LONG).show();
+                Log.i("Dosya ", "Safe Deleted");
+                Toast.makeText(getApplicationContext(), "Reports deleted ..", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getApplicationContext(), com.example.gm_face_ai.MainActivity.class);
                 startActivity(intent);
             }
@@ -247,12 +247,43 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
         fab5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //readData();
+                classifier.readData();
 
             }
         });
+        fab6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+
+                    openBT();
+                    findBT();
+                    openBT();
+                    findBT();
+                    openBT();
+                    findBT();
+                    openBT();
+                    findBT();
+                    openBT();
+                    findBT();
+                    openBT();
+                    findBT();
+                    openBT();
+                    findBT();
+                    openBT();
+                    findBT();
+                    openBT();
+                    findBT();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
 
         SwitchCam(CameraW);
+
 
     }
     // List.get(x) -> x numaralı kişi Datasını getirir.
@@ -262,55 +293,6 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
     //
 
 
-
-//    void MakeReport() {
-//        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
-//        SimpleDateFormat format1 = new SimpleDateFormat("dd-MM-yyyy");
-//        String firstName, secondName, DateTemp, Clock;
-//        String result = "No Data";
-//        Date clock;
-//        Date date;
-//        Date time;
-//        for (int x = 0; x < List.size(); x++) {
-//            firstName = List.get(x).get(0);
-//            secondName = List.get(x).get(1);
-//            DateTemp = List.get(x).get(4) + List.get(x).get(3) + List.get(x).get(7);
-//            try {
-//                date = format1.parse(DateTemp);
-//            } catch (ParseException e) {
-//                e.printStackTrace();
-//            }
-//            try {
-//                clock = format.parse(List.get(x).get(0));
-//            } catch (ParseException e) {
-//                e.printStackTrace();
-//            }
-//            Clock = List.get(x).get(5);
-//            result = firstName + " " + secondName + "\nGiriş saati : " + Clock + "\nTarih : " + DateTemp + "\n";
-//
-//            FileWriter wrtr = null;
-//            try {
-//                wrtr = new FileWriter(report, true);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            BufferedWriter bw = new BufferedWriter(wrtr);
-//            try {
-//                bw.write(result);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            try {
-//                bw.close();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            Log.i("TEST/2/ Dosya ", "Dosyaya kaydedildi " + result);
-//        }
-//        List.clear();
-//
-//    }
-
     private void animateFab() {
         if (isOpen) {
             fab.startAnimation(rotateBackward);
@@ -319,12 +301,14 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
             fab3.startAnimation(fabClose);
             fab4.startAnimation(fabClose);
             fab5.startAnimation(fabClose);
+            fab6.startAnimation(fabClose);
 
             fab1.setClickable(false);
             fab2.setClickable(false);
             fab3.setClickable(false);
             fab4.setClickable(false);
             fab5.setClickable(false);
+            fab6.setClickable(false);
 
             isOpen = false;
         } else {
@@ -334,12 +318,14 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
             fab3.startAnimation(fabOpen);
             fab4.startAnimation(fabOpen);
             fab5.startAnimation(fabOpen);
+            fab6.startAnimation(fabOpen);
 
             fab1.setClickable(true);
             fab2.setClickable(true);
             fab3.setClickable(true);
             fab4.setClickable(true);
             fab5.setClickable(true);
+            fab6.setClickable(true);
             isOpen = true;
         }
     }
@@ -381,7 +367,7 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
         trackingOverlay = findViewById(R.id.tracking_overlay);
         trackingOverlay.addCallback(
                 canvas -> {
-                    tracker.draw(canvas, txtName);
+                    tracker.draw(canvas, txtName, CameraW);
                     if (isDebug()) {
                         tracker.drawDebug(canvas, txtName);
                     }
@@ -448,9 +434,12 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
             finish();
         }
 
+
         runOnUiThread(() -> initSnackbar.dismiss());
         initialized = true;
     }
+
+    int i = 0;
 
     @Override
     protected void processImage() {
@@ -497,6 +486,25 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
                     cropCopyBitmap = Bitmap.createBitmap(croppedBitmap);
                     List<Classifier.Recognition> mappedRecognitions =
                             classifier.recognizeImage(croppedBitmap, cropToFrameTransform, this);
+                    if (classifier.sendTest()) {
+                        try {
+                            sendData(1);
+                            i++;
+                            if (i % 20 == 0) {
+                                sendData(0);
+
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        try {
+                            sendData(0);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+
+                        }
+                    }
 
                     lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
                     tracker.trackResults(mappedRecognitions, luminanceCopy, currTimestamp);
@@ -567,16 +575,142 @@ public class MainActivity extends CameraActivity implements OnImageAvailableList
 
         startActivityForResult(intent, requestCode);
     }
+//////////////BLUETHOOT//////////////////////////////////
 
-    void files(String str) {
+    String btData;
+
+    BluetoothAdapter mBluetoothAdapter;
+    BluetoothSocket mmSocket;
+    BluetoothDevice mmDevice;
+    OutputStream mmOutputStream;
+    InputStream mmInputStream;
+    Thread workerThread;
+    byte[] readBuffer;
+    int readBufferPosition;
+    volatile boolean stopWorker;
+    boolean connectionstate = false;
+    byte BtAdapterSayac = 0;
+    Button btnOpen, btnFind, btnAyarlar, btnSendData;
+
+
+    String sGelenVeri;
+    boolean bisChecked = false;
+
+
+    ////////////////////////////////////////////////////////
+    void openBT() throws IOException {
+
+        /*Bluetooth u açıyoruz.*/
         try {
-            File file1 = new File("/storage/emulated/0/test.txt");
-            FileWriter wrtr = new FileWriter(file1);
-            BufferedWriter bw = new BufferedWriter(wrtr);
-            bw.write(str);
-            bw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+            UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb"); //Standard //SerialPortService I
+            mmSocket = mmDevice.createRfcommSocketToServiceRecord(uuid);
+            mmSocket.connect();
+            mmOutputStream = mmSocket.getOutputStream();
+            mmInputStream = mmSocket.getInputStream();
+            beginListenForData();/*Bluetooth üzerinden gelen verileri yakalamak için bir listener oluşturuyoruz.*/
+        } catch (Exception ignored) {
+        }
+
+    }
+
+    void findBT() {
+        try {
+            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            if (mBluetoothAdapter == null) {
+                Toast.makeText(getApplicationContext(), "connext deleted ..", Toast.LENGTH_LONG).show();
+            }
+            if (BtAdapterSayac == 0) {
+                if (!mBluetoothAdapter.isEnabled()) {
+                    Intent enableBluetooth = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                    startActivityForResult(enableBluetooth, 0);
+                    BtAdapterSayac = 1;
+                }
+            }
+            Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+            if (pairedDevices.size() > 0) {
+                for (BluetoothDevice device : pairedDevices) {
+                    if (("HC-06").equals(device.getName().toString())) {/*Eşleşmiş cihazlarda HC-05 adında cihaz varsa bağlantıyı aktişleştiriyoruz. Burada HC-05 yerine bağlanmasını istediğiniz Bluetooth adını yazabilirsiniz.*/
+                        mmDevice = device;
+                        Toast.makeText(getApplicationContext(), "Bağlantı bulundu", Toast.LENGTH_LONG).show();
+                        connectionstate = true;
+                    }
+                }
+            }
+        } catch (Exception ignored) {
+        }
+    }
+
+    void closeBT() throws IOException {
+        try {
+            /*Aktif olan bluetooth bağlantımızı kapatıyoruz.*/
+            if (mBluetoothAdapter.isEnabled()) {
+                stopWorker = true;
+                mBluetoothAdapter.disable();
+                mmOutputStream.close();
+                mmInputStream.close();
+                mmSocket.close();
+            } else {
+            }
+        } catch (Exception ignored) {
+        }
+    }
+
+    void sendData(int data) throws IOException {
+        try {
+            if (connectionstate) {
+                /*Bluetooth bağlantımız aktifse veri gönderiyoruz.*/
+                String exData = String.valueOf(data);
+                mmOutputStream.write(exData.getBytes());
+                Log.i("led", String.valueOf(Integer.parseInt(String.valueOf(data))));
+            }
+        } catch (Exception ignored) {
+        }
+    }
+
+    void beginListenForData() {
+        try {
+            final Handler handler = new Handler();
+            final byte delimiter = 10; //This is the ASCII code for a newline character
+
+            stopWorker = false;
+            readBufferPosition = 0;
+            readBuffer = new byte[1024];
+            workerThread = new Thread(new Runnable() {
+                public void run() {
+                    while (!Thread.currentThread().isInterrupted() && !stopWorker) {
+                        try {
+                            int bytesAvailable = mmInputStream.available();
+                            if (bytesAvailable > 0) {
+                                byte[] packetBytes = new byte[bytesAvailable];
+                                mmInputStream.read(packetBytes);
+                                for (int i = 0; i < bytesAvailable; i++) {
+                                    byte b = packetBytes[i];
+                                    if (b == delimiter) {
+                                        final byte[] encodedBytes = new byte[readBufferPosition];
+                                        System.arraycopy(readBuffer, 0, encodedBytes, 0, encodedBytes.length);
+                                        final String data = new String(readBuffer, "US-ASCII");
+                                        readBufferPosition = 0;
+
+                                        handler.post(new Runnable() {
+                                            public void run() {
+                                                sGelenVeri = data.toString();
+                                                sGelenVeri = sGelenVeri.substring(0, 3);
+
+                                            }
+                                        });
+                                    } else {
+                                        readBuffer[readBufferPosition++] = b;
+                                    }
+                                }
+                            }
+                        } catch (IOException ex) {
+                            stopWorker = true;
+                        }
+                    }
+                }
+            });
+            workerThread.start();
+        } catch (Exception ignored) {
         }
     }
 }

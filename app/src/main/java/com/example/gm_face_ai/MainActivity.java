@@ -74,17 +74,5 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
     }
 }
-
-/*  SnackBar
-
-sb.setAction("Tamam", new View.OnClickListener() {
-@Override
-public void onClick(View view) {
-        sb.dismiss();
-        }
-        });
-        sb.show();*/

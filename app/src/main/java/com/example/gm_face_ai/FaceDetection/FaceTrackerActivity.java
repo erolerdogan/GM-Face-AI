@@ -47,6 +47,7 @@ public final class FaceTrackerActivity extends AppCompatActivity {
 
 
 
+
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -213,7 +214,7 @@ public final class FaceTrackerActivity extends AppCompatActivity {
     private class GraphicFaceTracker extends Tracker<Face> {
         private GraphicOverlay mOverlay;
         private FaceGraphic mFaceGraphic;
-        ImageView emoji = findViewById(R.id.imageViewEmoji);
+        //ImageView emoji = findViewById(R.id.imageViewEmoji);
 
         private float lefteyeProb = 0.0f;
 
@@ -236,7 +237,7 @@ public final class FaceTrackerActivity extends AppCompatActivity {
 
             mOverlay.add(mFaceGraphic);
             mFaceGraphic.updateFace(face);
-            EmojiResult(emoji,face.getIsSmilingProbability());
+          //  EmojiResult(emoji,face.getIsSmilingProbability());
 
             lefteyeProb = face.getIsLeftEyeOpenProbability();
             if (lefteyeProb <= 0.2f) {
